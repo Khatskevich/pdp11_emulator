@@ -1,16 +1,8 @@
 #include "Disassembler.h"
+#include "Emulator.h"
 #include <iostream>
 #include <sstream>
 using namespace std;
-
-typedef union{
-	uint32_t raw;
-	struct{
-		unsigned int mode : 3;
-		unsigned int reg : 3;
-		unsigned int unused : 26;
-	}split;
-}Operand;
 
 void parseJustOperand(Operation* operation, unsigned int size, stringstream& ss, unsigned int &next_command_read , Operand operand){
 	if (operand.split.reg == 07){

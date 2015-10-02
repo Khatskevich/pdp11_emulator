@@ -1,7 +1,7 @@
 #pragma once
 #include "Disassembler.h"
 #include "inttypes.h"
-
+#include "Emulator.h"
 
 string default(Operation* operation, unsigned int size);
 string MOVW(Operation* operation, unsigned int size);
