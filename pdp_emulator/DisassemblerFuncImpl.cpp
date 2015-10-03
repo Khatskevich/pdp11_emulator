@@ -1,4 +1,5 @@
 #include "Disassembler.h"
+#include "stdafx.h"
 #include "Emulator.h"
 #include <iostream>
 #include <sstream>

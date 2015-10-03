@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Emulator.h"
+#include "EmulatorFuncImpl.h"
 #include "stdlib.h"
 #include <iostream>
 #define _CRT_SECURE_DEPRECATE_MEMORY
@@ -167,6 +168,15 @@ void(*opOperationsNoDoubleOperandGroup[])(Operation *, Emulator*) = {
 
 Emulator::Emulator()
 {
+	for (int i = 0; i < 8; i++){
+		this->registers.R[i] = 0;
+	}
+	this->registers.flagC = 0;
+	this->registers.flagI = 0;
+	this->registers.flagN = 0;
+	this->registers.flagT = 0;
+	this->registers.flagV = 0;
+	this->registers.flagZ = 0;
 	this->memory = new char[MEMORY_SIZE];
 }
 
@@ -216,7 +226,7 @@ uint16_t Emulator::readWordFromMemory(unsigned int position){
 
 
 int Emulator::step(){
-
+	return 0;
 }
 
 void Emulator::incPc(){

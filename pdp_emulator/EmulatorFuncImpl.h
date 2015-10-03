@@ -7,7 +7,7 @@ using namespace std;
 
 
 
-void default(Operation* operation, Emulator * emulator){ cout << "Undefined function" << endl; };
+void default(Operation* operation, Emulator * emulator);
 void MOVW(Operation* operation, Emulator * emulator);
 void MOVB(Operation* operation, Emulator * emulator);
 void CMPW(Operation* operation, Emulator * emulator);

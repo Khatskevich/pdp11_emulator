@@ -16,6 +16,12 @@ typedef union{
 	struct{
 		unsigned int word : 1;
 		unsigned int opcode : 3;
+		unsigned int sS : 6;
+		unsigned int dD : 6;
+	}OPERANDS;
+	struct{
+		unsigned int word : 1;
+		unsigned int opcode : 3;
 		unsigned int ss : 3;
 		unsigned int SS : 3;
 		unsigned int dd : 3;
@@ -46,13 +52,13 @@ typedef union{
 #define R_PC 7
 
 typedef struct{
-	uint16_t R[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-	unsigned int flagI = 0;
-	unsigned int flagT = 0;
-	unsigned int flagN = 0;
-	unsigned int flagZ = 0;
-	unsigned int flagV = 0;
-	unsigned int flagC = 0;
+	uint16_t R[8] ;
+	unsigned int flagI ;
+	unsigned int flagT ;
+	unsigned int flagN ;
+	unsigned int flagZ ;
+	unsigned int flagV ;
+	unsigned int flagC ;
 }Registers;
 
 class Emulator
