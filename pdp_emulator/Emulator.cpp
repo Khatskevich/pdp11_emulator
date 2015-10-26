@@ -8,6 +8,7 @@
 #include "inttypes.h"
 using namespace std;
 
+
 // this array of functions is responsible for 2 operand functions
 void(*opOperationsDoubleOperandGroup[])(Operation *, Emulator* ) = {
 	/* 00 */	default, // It is not 2 operand command
@@ -231,4 +232,8 @@ int Emulator::step(){
 
 void Emulator::incPc(){
 	this->registers.R[R_PC]+=2;
+}
+
+char* Emulator::getVideoMemory(){
+	return &memory[VIDEO_MEMORY];
 }

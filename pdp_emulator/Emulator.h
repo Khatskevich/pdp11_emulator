@@ -1,6 +1,7 @@
 #pragma once
 #include "inttypes.h"
 #define MEMORY_SIZE 65536
+#define VIDEO_MEMORY 8192
 
 typedef union{
 	uint32_t raw;
@@ -72,6 +73,7 @@ public:
 	int writeWordToMemory( uint16_t word, unsigned int position);
 	char readByteFromMemory(unsigned int position);
 	uint16_t readWordFromMemory(unsigned int position);
+	char* getVideoMemory();
 	int step();
 	void incPc();
 };
