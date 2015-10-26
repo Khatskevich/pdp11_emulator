@@ -85,9 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Disassembler.h" />
-    <ClInclude Include="DisassemblerFuncImpl.h" />
-    <ClInclude Include="Emulator.h" />
-    <ClInclude Include="EmulatorFuncImpl.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -100,9 +97,6 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Disassembler.cpp" />
-    <ClCompile Include="DisassemblerFuncImpl.cpp" />
-    <ClCompile Include="Emulator.cpp" />
-    <ClCompile Include="EmulatorFuncImpl.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="pdp_emulator.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -112,11 +106,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MyForm.resx">
-      <DependentUpon>MyForm.h</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
