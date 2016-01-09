@@ -9,7 +9,7 @@
 	void SimpleDisplay::startDisplaying(){
 		Bitmap^ image1;
 		Bitmap^ image2;
-		image1 = gcnew Bitmap("C:\\music.bmp", true);
+		image1 = gcnew Bitmap("..\\music.bmp", true);
 		image2 = gcnew Bitmap(WIDTH, HEIGHT, PixelFormat::Format32bppArgb);
 		unsigned char* tmp = readBMP("..\\music.bmp");
 		//memcpy(tmp, videoMemory, WIDTH*HEIGHT * 3);
