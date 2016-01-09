@@ -49,6 +49,13 @@ typedef union{
 	}SINGLE_OPERAND;
 }Operation;
 
+
+#define R0 0
+#define R1 1
+#define R2 2
+#define R3 3
+#define R4 4
+#define R5 5
 #define R_STACK 6
 #define R_PC 7
 

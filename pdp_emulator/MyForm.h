@@ -85,11 +85,12 @@ namespace pdp_emulator {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(364, 326);
+			this->ClientSize = System::Drawing::Size(695, 326);
 			this->Controls->Add(this->pictureBox1);
 			this->Controls->Add(this->button1);
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
 
@@ -97,6 +98,8 @@ namespace pdp_emulator {
 #pragma endregion
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 		startSimpleDisplay();
+	}
+	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 	}
 	};
 }
