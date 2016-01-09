@@ -20,13 +20,20 @@ namespace pdp_emulator {
 	{
 	private:	Emulator* emulator;
 	private:	OppCodeGenerator* oppCodeGenerator;
-	private:	int  currentPosition;
-	private: System::Windows::Forms::Label^  label1;
-	private: System::Windows::Forms::Label^  label2;
-	private: System::Windows::Forms::Label^  label3;
-	private: System::Windows::Forms::Label^  label4;
-	private: System::Windows::Forms::Label^  label5;
-	private: System::Windows::Forms::Label^  label6;
+
+
+
+
+
+
+
+	private: System::Windows::Forms::ListBox^  listBox1;
+
+
+
+
+
+
 
 			 SimpleDisplay^ display;
 	public:
@@ -43,12 +50,11 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			emulator = new Emulator();
 			oppCodeGenerator = new OppCodeGenerator();
 			display = gcnew SimpleDisplay();
-			currentPosition = 0;
 		}
 
 		String^ toHex(uint16_t num) {
 			char tmp[20];
-			sprintf(tmp, "%X\n", num);
+			sprintf(tmp, "%X", num);
 			String^ tmpString = gcnew String(tmp);
 			return tmpString;
 		}
@@ -64,13 +70,9 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
 			display->startDisplaying();
 			uint16_t* raw = oppCodeGenerator->testGenerate();
-			label1->Text = toHex(currentPosition);
-			label2->Text = toBin(raw[currentPosition]);
-			label3->Text = toHex(currentPosition+1);
-			label4->Text = toBin(raw[currentPosition + 1]);
-			label5->Text = toHex(currentPosition+2);
-			label6->Text = toBin(raw[currentPosition + 2]);
-			currentPosition++;
+			for (int i = 0; i < 100; i++) {
+				listBox1->Items->Add(toHex(i) + "     " + toBin(raw[i]));
+			}
 		}
 
 	protected:
@@ -103,12 +105,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		{
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->label2 = (gcnew System::Windows::Forms::Label());
-			this->label3 = (gcnew System::Windows::Forms::Label());
-			this->label4 = (gcnew System::Windows::Forms::Label());
-			this->label5 = (gcnew System::Windows::Forms::Label());
-			this->label6 = (gcnew System::Windows::Forms::Label());
+			this->listBox1 = (gcnew System::Windows::Forms::ListBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -129,73 +126,23 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			this->pictureBox1->Size = System::Drawing::Size(258, 187);
 			this->pictureBox1->TabIndex = 1;
 			this->pictureBox1->TabStop = false;
+			this->pictureBox1->Click += gcnew System::EventHandler(this, &MyForm::pictureBox1_Click);
 			// 
-			// label1
+			// listBox1
 			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(348, 82);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(35, 13);
-			this->label1->TabIndex = 2;
-			this->label1->Text = L"label1";
-			this->label1->Click += gcnew System::EventHandler(this, &MyForm::label1_Click);
-			// 
-			// label2
-			// 
-			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(421, 82);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(35, 13);
-			this->label2->TabIndex = 3;
-			this->label2->Text = L"label2";
-			// 
-			// label3
-			// 
-			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(348, 99);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(35, 13);
-			this->label3->TabIndex = 4;
-			this->label3->Text = L"label3";
-			// 
-			// label4
-			// 
-			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(421, 99);
-			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(35, 13);
-			this->label4->TabIndex = 5;
-			this->label4->Text = L"label4";
-			// 
-			// label5
-			// 
-			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(348, 116);
-			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(35, 13);
-			this->label5->TabIndex = 6;
-			this->label5->Text = L"label5";
-			// 
-			// label6
-			// 
-			this->label6->AutoSize = true;
-			this->label6->Location = System::Drawing::Point(421, 116);
-			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(35, 13);
-			this->label6->TabIndex = 7;
-			this->label6->Text = L"label6";
+			this->listBox1->FormattingEnabled = true;
+			this->listBox1->Location = System::Drawing::Point(339, 41);
+			this->listBox1->Name = L"listBox1";
+			this->listBox1->Size = System::Drawing::Size(262, 186);
+			this->listBox1->TabIndex = 8;
+			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::listBox1_SelectedIndexChanged);
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(625, 326);
-			this->Controls->Add(this->label6);
-			this->Controls->Add(this->label5);
-			this->Controls->Add(this->label4);
-			this->Controls->Add(this->label3);
-			this->Controls->Add(this->label2);
-			this->Controls->Add(this->label1);
+			this->Controls->Add(this->listBox1);
 			this->Controls->Add(this->pictureBox1);
 			this->Controls->Add(this->button1);
 			this->Name = L"MyForm";
@@ -203,7 +150,6 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
-			this->PerformLayout();
 
 		}
 #pragma endregion
@@ -216,5 +162,9 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 	}
 	private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
 	}
+private: System::Void pictureBox1_Click(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void listBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
+}
 };
 }
