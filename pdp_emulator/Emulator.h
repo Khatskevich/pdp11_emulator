@@ -72,6 +72,7 @@ typedef struct{
 class Emulator
 {
 public:
+	
 	Registers registers;
 	char* memory;
 	Emulator();

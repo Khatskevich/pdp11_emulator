@@ -11,7 +11,7 @@
 		Bitmap^ image2;
 		image1 = gcnew Bitmap("C:\\music.bmp", true);
 		image2 = gcnew Bitmap(WIDTH, HEIGHT, PixelFormat::Format32bppArgb);
-		unsigned char* tmp = readBMP("C:\\music.bmp");
+		unsigned char* tmp = readBMP("..\\music.bmp");
 		//memcpy(tmp, videoMemory, WIDTH*HEIGHT * 3);
 		int x;
 		int y;

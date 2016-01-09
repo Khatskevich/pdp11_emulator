@@ -91,6 +91,7 @@
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="OppCodeGenerator.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SimpleDisplay.h" />
     <ClInclude Include="stdafx.h" />
@@ -105,6 +106,7 @@
     <ClCompile Include="Emulator.cpp" />
     <ClCompile Include="EmulatorFuncImpl.cpp" />
     <ClCompile Include="MyForm.cpp" />
+    <ClCompile Include="OppCodeGenerator.cpp" />
     <ClCompile Include="pdp_emulator.cpp" />
     <ClCompile Include="SimpleDisplay.cpp" />
     <ClCompile Include="stdafx.cpp">
