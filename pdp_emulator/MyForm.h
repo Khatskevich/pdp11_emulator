@@ -59,10 +59,16 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			return tmpString;
 		}
 		String^ toBin(uint16_t num) {
-			char tmp[20];
-			itoa(num, tmp, 2);
-			String^ tmpString = gcnew String(tmp);
-			return tmpString;
+			char tmp[18];
+			for (int i = 16; i >= 8; i--){
+				tmp[16-i] = (num & (1 << i)) ? '1' : '0';
+			}
+			tmp[8] = ' ';
+			for (int i = 7; i >= 0; i--){
+				tmp[16-i] = (num & (1 << i)) ? '1' : '0';
+			}
+			tmp[17] = '\0';
+			return gcnew String(tmp);
 		}
 
 
