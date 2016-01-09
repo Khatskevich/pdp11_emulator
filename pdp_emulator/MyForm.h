@@ -60,8 +60,8 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		}
 		String^ toBin(uint16_t num) {
 			char tmp[18];
-			for (int i = 16; i >= 8; i--){
-				tmp[16-i] = (num & (1 << i)) ? '1' : '0';
+			for (int i = 15; i >= 8; i--){
+				tmp[16-i-1] = (num & (1 << i)) ? '1' : '0';
 			}
 			tmp[8] = ' ';
 			for (int i = 7; i >= 0; i--){
