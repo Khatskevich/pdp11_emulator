@@ -75,7 +75,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		void startSimpleDisplay() {
 			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
 			display->startDisplaying();
-			int16_t* raw = oppCodeGenerator->testGenerate();
+			int16_t* raw = oppCodeGenerator->testGenerate("..\\music.bmp");
 			for (int i = 0; i < 100; i++) {
 				listBox1->Items->Add(toHex(i) + "     " + toBin(raw[i]));
 			}
