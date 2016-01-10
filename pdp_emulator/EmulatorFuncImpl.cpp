@@ -183,8 +183,11 @@ void ADD(Operation* operation, Emulator * emulator) {
 		*destination += *source;
 	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
 };
-void SUB(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-
+void SUB(Operation* operation, Emulator * emulator) {
+	STANDARD_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
+		*destination -= *source;
+	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
+};
 void HALT_WAIT_RTI_IOT_RESET(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void HALT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void WAIT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
@@ -193,8 +196,15 @@ void IOT(Operation* operation, Emulator * emulator) { default(operation, emulato
 void RESET(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void JMP(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void RTS(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void SWAP(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void BR(Operation* operation, Emulator * emulator) { default(operation, emulator); };
+void SWAP(Operation* operation, Emulator * emulator){
+	STANDARD_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
+	*destination = source_val;
+	*source = destination_val;
+	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
+};
+void BR(Operation* operation, Emulator * emulator) {
+	emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX * 2;
+};
 void BNE(Operation* operation, Emulator * emulator) {
 	if (!emulator->registers.flagZ){
 		emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX*2;
@@ -203,7 +213,14 @@ void BNE(Operation* operation, Emulator * emulator) {
 		emulator->incPc();
 	}
 };
-void BEQ(Operation* operation, Emulator * emulator) { default(operation, emulator); };
+void BEQ(Operation* operation, Emulator * emulator){
+	if (emulator->registers.flagZ){
+		emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX * 2;
+	}
+	else{
+		emulator->incPc();
+	}
+};
 void BGE(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BLT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BGT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
@@ -243,8 +260,22 @@ void ROLB(Operation* operation, Emulator * emulator) { default(operation, emulat
 void ASRB(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void ASLB(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 
-void BPL(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void BMI(Operation* operation, Emulator * emulator) { default(operation, emulator); };
+void BPL(Operation* operation, Emulator * emulator){
+	if (!emulator->registers.flagN){
+		emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX * 2;
+	}
+	else{
+		emulator->incPc();
+	}
+};
+void BMI(Operation* operation, Emulator * emulator){
+	if (emulator->registers.flagN){
+		emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX * 2;
+	}
+	else{
+		emulator->incPc();
+	}
+};
 void BHI(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BLOS(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BVC(Operation* operation, Emulator * emulator) { default(operation, emulator); };

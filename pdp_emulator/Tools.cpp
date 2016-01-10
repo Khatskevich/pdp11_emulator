@@ -43,7 +43,7 @@ bool Tools::getBiteByPosition(int16_t* buffer, int position) {
 }
 
 bool Tools::isBlack(int r, int g, int b) { 
-	if ((r + g + b) / 3 < 128)
+	if ((r + g + b) / 3 > 128)
 		return true;
 	else 
 		return false;

@@ -31,6 +31,7 @@ namespace pdp_emulator {
 	private: System::Windows::Forms::ListBox^  listBox1;
 	private: System::Windows::Forms::ListBox^  listBox2;
 	private: System::Windows::Forms::Button^  button2;
+	private: System::Windows::Forms::TextBox^  textBox1;
 
 
 
@@ -103,8 +104,20 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		}
 
 		void step() {
-			setCursor(emulator->registers.R[7]/2, "  ");
-			emulator->step();
+
+			
+	
+
+			int steps_num = 1;
+			try{
+				steps_num = int::Parse(textBox1->Text);
+			}
+			catch (...){
+			}
+			setCursor(emulator->registers.R[7] / 2, "  ");
+			for (int i = 0; i < steps_num; i++){
+				emulator->step();
+			}
 			showRegisters();
 			setCursor(emulator->registers.R[7]/2, "->");
 			display->populateFrame();
@@ -164,12 +177,13 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			this->listBox1 = (gcnew System::Windows::Forms::ListBox());
 			this->listBox2 = (gcnew System::Windows::Forms::ListBox());
 			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(141, 12);
+			this->button1->Location = System::Drawing::Point(61, 12);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(75, 23);
 			this->button1->TabIndex = 0;
@@ -206,7 +220,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			// 
 			// button2
 			// 
-			this->button2->Location = System::Drawing::Point(271, 11);
+			this->button2->Location = System::Drawing::Point(142, 12);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(75, 23);
 			this->button2->TabIndex = 10;
@@ -214,11 +228,20 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			this->button2->UseVisualStyleBackColor = true;
 			this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
 			// 
+			// textBox1
+			// 
+			this->textBox1->Location = System::Drawing::Point(224, 14);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(100, 20);
+			this->textBox1->TabIndex = 11;
+			this->textBox1->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox1_TextChanged_1);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(659, 500);
+			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->listBox2);
 			this->Controls->Add(this->listBox1);
@@ -229,6 +252,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
+			this->PerformLayout();
 
 		}
 #pragma endregion
@@ -247,6 +271,8 @@ private: System::Void listBox1_SelectedIndexChanged(System::Object^  sender, Sys
 }
 private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
 	step();
+}
+private: System::Void textBox1_TextChanged_1(System::Object^  sender, System::EventArgs^  e) {
 }
 };
 }
