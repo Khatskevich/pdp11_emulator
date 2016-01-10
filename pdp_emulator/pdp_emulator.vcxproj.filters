@@ -45,6 +45,12 @@
     <ClInclude Include="OppCodeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BITMAP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
@@ -80,6 +86,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OppCodeGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BITMAP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

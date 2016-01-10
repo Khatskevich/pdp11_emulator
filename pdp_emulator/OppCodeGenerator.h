@@ -7,7 +7,7 @@
 
 class OppCodeGenerator {
 private:
-	void populateImage(int16_t * buffer, BITMAP *bitmap);
+	void populateImage(int8_t * buffer, BITMAP *bitmap);
 	
 public:
 	int16_t *testGenerate(char *path);

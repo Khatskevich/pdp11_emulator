@@ -91,10 +91,12 @@ XLOOP : MOV - WIDTH, R1
 	oppCodeProgramm[15] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R5), OPERAND(REG, R4));
 	oppCodeProgramm[16] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R2));
 	oppCodeProgramm[17] = GENERATE_BRANCH_COMMAND(BNE, -7);
-	populateImage(oppCodeProgramm, bitmap);
+	populateImage((int8_t*)oppCodeProgramm, bitmap);
 	return oppCodeProgramm;
 }
 
-void OppCodeGenerator::populateImage(int16_t *oppCodeProgramm, BITMAP *bitmap) {
-
+void OppCodeGenerator::populateImage(int8_t *oppCodeProgramm, BITMAP *bitmap) {
+	for (int i = 0; i < bitmap->getHeight() * bitmap->getWidth(); i++) {
+		Tools::setBiteByPosition((uint16_t *)oppCodeProgramm, i, Tools::isBlack(Color::FromArgb(0, 0, 0)));
+	}
 }

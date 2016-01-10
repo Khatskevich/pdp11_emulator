@@ -84,6 +84,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BITMAP.h" />
     <ClInclude Include="Disassembler.h" />
     <ClInclude Include="DisassemblerFuncImpl.h" />
     <ClInclude Include="Emulator.h" />
@@ -95,12 +96,14 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="SimpleDisplay.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Tools.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="BITMAP.cpp" />
     <ClCompile Include="Disassembler.cpp" />
     <ClCompile Include="DisassemblerFuncImpl.cpp" />
     <ClCompile Include="Emulator.cpp" />
@@ -113,6 +116,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
