@@ -96,7 +96,10 @@ XLOOP : MOV - WIDTH, R1
 }
 
 void OppCodeGenerator::populateImage(int8_t *oppCodeProgramm, BITMAP *bitmap) {
+	int indexInBitmap = 0;
+	unsigned char* tmp = bitmap->getBuffer();
 	for (int i = 0; i < bitmap->getHeight() * bitmap->getWidth(); i++) {
-		Tools::setBiteByPosition((uint16_t *)oppCodeProgramm, i, Tools::isBlack(Color::FromArgb(0, 0, 0)));
+		Tools::setBiteByPosition((uint16_t *)oppCodeProgramm, i, Tools::isBlack(Color::FromArgb(tmp[indexInBitmap], tmp[indexInBitmap + 1], tmp[indexInBitmap+ 2])));
+		indexInBitmap += 3;
 	}
 }
