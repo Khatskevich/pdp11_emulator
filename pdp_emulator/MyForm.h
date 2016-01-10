@@ -93,21 +93,30 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 				i += size+1;
 			}
 		}
+
+		void MarshalString(String ^ s, string& os) {
+			using namespace Runtime::InteropServices;
+			const char* chars =
+				(const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
+			os = chars;
+			Marshal::FreeHGlobal(IntPtr((void*)chars));
+		}
+
 		void step() {
+			setCursor(emulator->registers.R[7]/2, "  ");
 			emulator->step();
 			showRegisters();
+			setCursor(emulator->registers.R[7]/2, "->");
 			display->populateFrame();
-			//listBox1->Items[0] = "asdasd";
-		//	String ^str = listBox1->Items[0]->ToString();
-			//str->
-			//((string *)listBox1->Items[0])->replace(0, 2, "->");
 		}
-		void deleteCursor(int position) {
-			
-		}
-
-		void setCursor(int position) {
-
+		
+			void setCursor(int position, const char* arrow) {
+			String ^str = listBox1->Items[position]->ToString();
+			string normalString;
+			MarshalString(str, normalString);
+			normalString.replace(0, 2, arrow);
+			String^ str2 = gcnew String(normalString.c_str());
+			listBox1->Items[position] = str2;
 		}
 		void showRegisters(){
 			listBox2->Items->Clear();
@@ -185,6 +194,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			this->listBox1->Size = System::Drawing::Size(262, 186);
 			this->listBox1->TabIndex = 8;
 			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::listBox1_SelectedIndexChanged);
+			this->listBox1->Sorted = false;
 			// 
 			// listBox2
 			// 
