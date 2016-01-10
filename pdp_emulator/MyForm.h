@@ -89,13 +89,25 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			while ( i < 100) {
 				unsigned int size = 0;
 				std::string temp = Disassembler::disassemble((char*)(raw + i), size);
-				listBox1->Items->Add(toHex(i*2) + "     " + toBin(raw[i]) + "   " + gcnew String(temp.c_str()) );
+				listBox1->Items->Add("   " + toHex(i*2) + "     " + toBin(raw[i]) + "   " + gcnew String(temp.c_str()) );
 				i += size+1;
 			}
 		}
 		void step() {
 			emulator->step();
 			showRegisters();
+			display->populateFrame();
+			//listBox1->Items[0] = "asdasd";
+		//	String ^str = listBox1->Items[0]->ToString();
+			//str->
+			//((string *)listBox1->Items[0])->replace(0, 2, "->");
+		}
+		void deleteCursor(int position) {
+			
+		}
+
+		void setCursor(int position) {
+
 		}
 		void showRegisters(){
 			listBox2->Items->Clear();
