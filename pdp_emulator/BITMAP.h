@@ -14,6 +14,7 @@ public:
 	BITMAP();
 	int getHeight(){ return this->height; };
 	int getWidth(){ return this->width; };
+	void setWidth(int width){ this->width = width; };
 	unsigned char * getBuffer(){ return this->buffer; };
 	~BITMAP(){ delete[] buffer; };
 };

@@ -66,6 +66,7 @@ int16_t* OppCodeGenerator::testGenerate(char *path) {
 	ADD R0, R5
 	*/
 	BITMAP *bitmap = Tools::readBMP(path);
+	populateImage((int8_t*)oppCodeProgramm + IMAGE_STARTING_ADDRESS, bitmap);
 	oppCodeProgramm[0] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R0));
 	oppCodeProgramm[1] = 512 / BYTE;
 	oppCodeProgramm[2] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R2));
@@ -99,15 +100,24 @@ BNE XLOOP1
 	oppCodeProgramm[18] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R5), OPERAND(REG, R4));
 	oppCodeProgramm[19] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R2));
 	oppCodeProgramm[20] = GENERATE_BRANCH_COMMAND(BNE, -7); 
-	populateImage((int8_t*)oppCodeProgramm + IMAGE_STARTING_ADDRESS, bitmap);
+	
 	return oppCodeProgramm;
 }
 
 void OppCodeGenerator::populateImage(int8_t *oppCodeProgramm, BITMAP *bitmap) {
 	int indexInBitmap = 0;
 	unsigned char* tmp = bitmap->getBuffer();
-	for (int i = 0; i < bitmap->getHeight() * bitmap->getWidth(); i++) {
-		Tools::setBiteByPosition((int16_t *)oppCodeProgramm, i, Tools::isBlack(tmp[indexInBitmap], tmp[indexInBitmap + 1], tmp[indexInBitmap+ 2]));
-		indexInBitmap += 3;
+	
+	int x, y;
+	int additional_width_per_line = 0;
+	if (bitmap->getWidth() % 8!=0){
+		additional_width_per_line = 8 - (bitmap->getWidth() % 8);
 	}
+	for (y = 0; y < bitmap->getHeight(); y++) {
+		for ( x = 0; x < bitmap->getWidth(); x++) {
+			Tools::setBiteByPosition((int16_t *)oppCodeProgramm, (bitmap->getHeight() - y)*( additional_width_per_line + bitmap->getWidth()) + x, Tools::isBlack(tmp[indexInBitmap], tmp[indexInBitmap + 1], tmp[indexInBitmap + 2]));
+			indexInBitmap += 3;
+		}
+	}
+	bitmap->setWidth(bitmap->getWidth() + additional_width_per_line);
 }

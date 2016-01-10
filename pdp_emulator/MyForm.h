@@ -198,7 +198,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			// 
 			this->pictureBox1->Location = System::Drawing::Point(61, 41);
 			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(258, 187);
+			this->pictureBox1->Size = System::Drawing::Size(512, 256);
 			this->pictureBox1->TabIndex = 1;
 			this->pictureBox1->TabStop = false;
 			this->pictureBox1->Click += gcnew System::EventHandler(this, &MyForm::pictureBox1_Click);
@@ -206,7 +206,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			// listBox1
 			// 
 			this->listBox1->FormattingEnabled = true;
-			this->listBox1->Location = System::Drawing::Point(339, 41);
+			this->listBox1->Location = System::Drawing::Point(593, 41);
 			this->listBox1->Name = L"listBox1";
 			this->listBox1->Size = System::Drawing::Size(264, 433);
 			this->listBox1->TabIndex = 8;
@@ -215,7 +215,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			// listBox2
 			// 
 			this->listBox2->FormattingEnabled = true;
-			this->listBox2->Location = System::Drawing::Point(62, 234);
+			this->listBox2->Location = System::Drawing::Point(61, 303);
 			this->listBox2->Name = L"listBox2";
 			this->listBox2->Size = System::Drawing::Size(262, 238);
 			this->listBox2->TabIndex = 9;
@@ -242,7 +242,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(612, 483);
+			this->ClientSize = System::Drawing::Size(962, 483);
 			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->listBox2);
