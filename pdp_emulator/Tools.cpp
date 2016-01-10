@@ -2,6 +2,7 @@
 #include "Tools.h"
 #include <stdio.h>
 
+
 Tools::Tools()
 {
 }
@@ -35,6 +36,10 @@ bool Tools::getBiteByPosition(uint16_t* buffer, uint16_t position) {
 	int index_of_word = position / sizeof(position);
 	int index_of_byte = position % sizeof(position);
 	return (buffer[index_of_word] & (1 << index_of_byte));
+}
+
+bool Tools::isBlack(Color color) {
+	return ((color.R + color.G + color.B) / 3 < 124);
 }
 
 void Tools::setBiteByPosition(uint16_t* buffer, uint16_t position, bool bite) {
