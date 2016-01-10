@@ -91,7 +91,7 @@ XLOOP : MOV - WIDTH, R1
 	oppCodeProgramm[15] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R5), OPERAND(REG, R4));
 	oppCodeProgramm[16] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R2));
 	oppCodeProgramm[17] = GENERATE_BRANCH_COMMAND(BNE, -7);
-	populateImage((int8_t*)oppCodeProgramm, bitmap);
+	populateImage((int8_t*)oppCodeProgramm + IMAGE_STARTING_ADDRESS, bitmap);
 	return oppCodeProgramm;
 }
 

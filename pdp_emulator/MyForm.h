@@ -79,7 +79,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			int16_t* raw = oppCodeGenerator->testGenerate("..\\music.bmp");
 			int i = 0;
 			while ( i < 100) {
-				unsigned int size = 10;
+				unsigned int size = 0;
 				std::string temp = Disassembler::disassemble((char*)(raw + i), size);
 				listBox1->Items->Add(toHex(i) + "     " + toBin(raw[i]) + "   " + gcnew String(temp.c_str()) );
 				i += size+1;
