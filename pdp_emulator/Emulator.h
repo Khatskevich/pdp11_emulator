@@ -12,6 +12,7 @@ typedef union{
 	}split;
 }Operand;
 
+#pragma pack( 1)
 typedef union{
 	uint16_t raw;
 	struct{
@@ -29,8 +30,8 @@ typedef union{
 		unsigned int word : 1;
 	}DWORD;
 	struct{
-		unsigned int XX : 6;
-		unsigned int opcode : 6;
+		int XX : 8;
+		unsigned int opcode : 4;
 		unsigned int unused : 3;
 		unsigned int word : 1;
 	}BRANCH;
@@ -47,7 +48,7 @@ typedef union{
 		unsigned int DD : 6;
 		unsigned int unused : 10;
 	}SINGLE_OPERAND;
-}Operation;
+} Operation ;
 
 
 #define R0 0

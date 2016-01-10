@@ -3,6 +3,7 @@
 #include "EmulatorFuncImpl.h"
 #include "SimpleDisplay.h"
 #include "OppCodeGenerator.h"
+#include "Disassembler.h"
 #include <iomanip>
 namespace pdp_emulator {
 
@@ -76,8 +77,12 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
 			display->startDisplaying();
 			int16_t* raw = oppCodeGenerator->testGenerate();
-			for (int i = 0; i < 100; i++) {
-				listBox1->Items->Add(toHex(i) + "     " + toBin(raw[i]));
+			int i = 0;
+			while ( i < 100) {
+				unsigned int size = 10;
+				std::string temp = Disassembler::disassemble((char*)(raw + i), size);
+				listBox1->Items->Add(toHex(i) + "     " + toBin(raw[i]) + "   " + gcnew String(temp.c_str()) );
+				i += size+1;
 			}
 		}
 

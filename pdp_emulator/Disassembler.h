@@ -10,7 +10,7 @@ static class Disassembler
 {
 public:
 	Disassembler();
-	static string disassemble(char*operation, unsigned int size);
+	static string disassemble(char*operation, unsigned int &size);
 	static int checkIfItIsDoubleOperandCommand(Operation* code);
 };
 
