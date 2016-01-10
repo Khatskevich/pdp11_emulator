@@ -133,7 +133,14 @@ string RESET(Operation* operation, unsigned int &size){ stringstream ss; ss << "
 string JMP(Operation* operation, unsigned int &size){ return "JMP " + parseOperand(operation, size); };
 string RTS(Operation* operation, unsigned int &size){ return "RTS " + parseOperand(operation, size); };
 string SWAP(Operation* operation, unsigned int &size){ return "SWAP " + parseOperand(operation, size); };
-string BR(Operation* operation, unsigned int &size){ return "BR " + parseOperand(operation, size); };
+string BR(Operation* operation, unsigned int &size){
+	stringstream ss;
+	ss << "BR ";
+	ss << "PC";
+	if (operation->BRANCH.XX >= 0) ss << "+";
+	ss << operation->BRANCH.XX;
+	return ss.str();
+};
 string BNE(Operation* operation, unsigned int &size){ 
 	stringstream ss; 
 	ss << "BNE ";

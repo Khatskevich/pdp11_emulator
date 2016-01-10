@@ -35,6 +35,7 @@ enum {
 #define INC 42
 #define ADD 6
 #define BNE 2
+#define BR 1
 
 #define OPERAND(mode, reg) ((((int16_t)mode) << 3) + reg)
 #define GENERATE_DOUBLE_OPERANDS_COMMAND(command,ss, dd) ((((int16_t)command) << 12) + (((int16_t)ss << 6) + (dd)))
@@ -70,7 +71,7 @@ int16_t* OppCodeGenerator::testGenerate(const char *path) {
 	oppCodeProgramm[0] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R0));
 	oppCodeProgramm[1] = DISPLAY_WIDTH / BYTE;
 	oppCodeProgramm[2] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R2));
-	oppCodeProgramm[3] = bitmap->getHeight() / BYTE;
+	oppCodeProgramm[3] = -bitmap->getHeight();
 	oppCodeProgramm[4] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R3));
 	oppCodeProgramm[5] = IMAGE_STARTING_ADDRESS;
 	oppCodeProgramm[6] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R4));
@@ -100,6 +101,7 @@ BNE XLOOP1
 	oppCodeProgramm[18] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R5), OPERAND(REG, R4));
 	oppCodeProgramm[19] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R2));
 	oppCodeProgramm[20] = GENERATE_BRANCH_COMMAND(BNE, -7); 
+	oppCodeProgramm[21] = GENERATE_BRANCH_COMMAND(BR, 0);
 	
 	return oppCodeProgramm;
 }
