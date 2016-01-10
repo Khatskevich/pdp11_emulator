@@ -2,12 +2,16 @@
 #include "stdafx.h"
 #include "DisassemblerFuncImpl.h"
 #include "EmulatorFuncImpl.h"
-
-
+#include "BITMAP.h"
+#define DISPLAY_WIDTH 64
+#define DISPLAY_HEIGHT 64
+#define COLOR_DEPTH 2
+#include <list>
 using namespace System::Drawing;
 using namespace System;
 using namespace System::Drawing::Imaging;
 using namespace System::Windows::Forms;
+
 	public ref class SimpleDisplay
 	{
 		uint8_t *videoMemory;
@@ -19,5 +23,6 @@ using namespace System::Windows::Forms;
 			videoMemory = vm;
 		};
 		void startDisplaying();
-		unsigned char* readBMP(char* filename);
+		void populateFrame();
+		void swapFrames();
 	};
