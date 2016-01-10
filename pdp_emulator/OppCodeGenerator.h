@@ -7,6 +7,10 @@
 
 
 class OppCodeGenerator {
+private:
+	int16_t getImageWidth();
+	int16_t getImageHeight();
+	int16_t getStartImageAddress();
 public:
-	uint16_t *testGenerate();
+	int16_t *testGenerate();
 };
