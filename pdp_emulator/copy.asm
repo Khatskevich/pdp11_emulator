@@ -20,13 +20,13 @@ for(y=-heidgt_curr;y<0;y++){
 		MOV DEST_ADDR, R4
 		MOV -R1, R5
 		ADD R0, R5
-XLOOP:	MOV -WIDTH, R1
-		MOV (R3)+, (R4)+
+XLOOP1:	MOV -WIDTH, R1
+XLOOP2:	MOV (R3)+, (R4)+
 		INC R1
-		BNE XLOOP
+		BNE XLOOP2
 		ADD R5, R4
 		INC R2
-		BNE XLOOP
+		BNE XLOOP1
 		EXIT
 
 

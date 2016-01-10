@@ -76,16 +76,37 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 
 
 		void startSimpleDisplay() {
+			showRegisters();
 			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
 			display->startDisplaying();
 			int16_t* raw = oppCodeGenerator->testGenerate("..\\music.bmp");
+			memcpy((void*)emulator->memory, (void*)raw, 100);
+			free(raw);
+			raw = (int16_t*) emulator->memory;
+
 			int i = 0;
 			while ( i < 100) {
 				unsigned int size = 0;
 				std::string temp = Disassembler::disassemble((char*)(raw + i), size);
-				listBox1->Items->Add(toHex(i) + "     " + toBin(raw[i]) + "   " + gcnew String(temp.c_str()) );
+				listBox1->Items->Add(toHex(i*2) + "     " + toBin(raw[i]) + "   " + gcnew String(temp.c_str()) );
 				i += size+1;
 			}
+		}
+		void step() {
+			emulator->step();
+			showRegisters();
+		}
+		void showRegisters(){
+			listBox2->Items->Clear();
+			for (int i = 0; i < 8; i++){
+				listBox2->Items->Add("R" + toHex(i) + " " + toHex(emulator->registers.R[i]));
+			}
+			listBox2->Items->Add("flagC" + " " + toHex(emulator->registers.flagC));
+			listBox2->Items->Add("flagI" + " " + toHex(emulator->registers.flagI));
+			listBox2->Items->Add("flagN" + " " + toHex(emulator->registers.flagN));
+			listBox2->Items->Add("flagT" + " " + toHex(emulator->registers.flagT));
+			listBox2->Items->Add("flagV" + " " + toHex(emulator->registers.flagV));
+			listBox2->Items->Add("flagZ" + " " + toHex(emulator->registers.flagZ));
 		}
 
 	protected:
@@ -202,7 +223,7 @@ private: System::Void pictureBox1_Click(System::Object^  sender, System::EventAr
 private: System::Void listBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
-
+	step();
 }
 };
 }
