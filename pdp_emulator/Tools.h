@@ -8,10 +8,10 @@ using namespace System::Drawing::Imaging;
 class Tools
 {
 public:
-	static bool getBiteByPosition(uint16_t* buffer, uint16_t position);
-	static void setBiteByPosition(uint16_t* buffer, uint16_t position, bool bite);
+	static bool getBiteByPosition(int16_t* buffer, int position);
+	static void setBiteByPosition(int16_t* buffer, int position, bool bite);
 	static BITMAP* readBMP(char *);
-	static bool isBlack(Color color);
+	static bool isBlack(int r, int g, int b);
 	Tools();
 };
 

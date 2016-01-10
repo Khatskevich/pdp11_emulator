@@ -2,6 +2,7 @@
 #include "OppCodeGenerator.h"
 #include "Tools.h"
 #include <stdlib.h>
+#include <cstring>
 
 
 /*
@@ -39,10 +40,12 @@ enum {
 #define GENERATE_BRANCH_COMMAND(command, offset) ((((uint16_t)command) << 8) + ((uint8_t)offset))
 
 
-#define IMAGE_STARTING_ADDRESS  50
+#define IMAGE_STARTING_ADDRESS 2*18
 
 int16_t* OppCodeGenerator::testGenerate(char *path) {
-	int16_t *oppCodeProgramm = (int16_t *)calloc(sizeof(int16_t), MEMORY_SIZE);
+	int16_t *oppCodeProgramm = (int16_t *)calloc(sizeof(int8_t), MEMORY_SIZE);
+
+
 /*
 	R0 - width / height of display
 	R1 - current width
@@ -72,7 +75,7 @@ int16_t* OppCodeGenerator::testGenerate(char *path) {
 	oppCodeProgramm[8] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(REG, R1), OPERAND(REG, R5));
 	oppCodeProgramm[9] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R0), OPERAND(REG, R5));
 
-
+	
 /*
 XLOOP : MOV - WIDTH, R1
 	MOV(R3) + , (R4)+
@@ -81,7 +84,7 @@ XLOOP : MOV - WIDTH, R1
 	ADD R5, R4
 	INC R2
 	BNE XLOOP
-*/
+	*/
 	oppCodeProgramm[10] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R1));
 	oppCodeProgramm[11] = bitmap->getWidth();
 
@@ -90,7 +93,7 @@ XLOOP : MOV - WIDTH, R1
 	oppCodeProgramm[14] = GENERATE_BRANCH_COMMAND(BNE, -4);
 	oppCodeProgramm[15] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R5), OPERAND(REG, R4));
 	oppCodeProgramm[16] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R2));
-	oppCodeProgramm[17] = GENERATE_BRANCH_COMMAND(BNE, -7);
+	oppCodeProgramm[17] = GENERATE_BRANCH_COMMAND(BNE, -7); 
 	populateImage((int8_t*)oppCodeProgramm + IMAGE_STARTING_ADDRESS, bitmap);
 	return oppCodeProgramm;
 }
@@ -99,7 +102,7 @@ void OppCodeGenerator::populateImage(int8_t *oppCodeProgramm, BITMAP *bitmap) {
 	int indexInBitmap = 0;
 	unsigned char* tmp = bitmap->getBuffer();
 	for (int i = 0; i < bitmap->getHeight() * bitmap->getWidth(); i++) {
-		Tools::setBiteByPosition((uint16_t *)oppCodeProgramm, i, Tools::isBlack(Color::FromArgb(tmp[indexInBitmap], tmp[indexInBitmap + 1], tmp[indexInBitmap+ 2])));
+		Tools::setBiteByPosition((int16_t *)oppCodeProgramm, i, Tools::isBlack(tmp[indexInBitmap], tmp[indexInBitmap + 1], tmp[indexInBitmap+ 2]));
 		indexInBitmap += 3;
 	}
 }

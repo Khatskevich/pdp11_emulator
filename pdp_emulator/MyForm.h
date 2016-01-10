@@ -74,9 +74,11 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 
 
 		void startSimpleDisplay() {
-			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
-			display->startDisplaying();
+			//display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
 			int16_t* raw = oppCodeGenerator->testGenerate("..\\music.bmp");
+			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)raw);
+			display->populateFrame();
+
 			int i = 0;
 			while ( i < 100) {
 				unsigned int size = 0;

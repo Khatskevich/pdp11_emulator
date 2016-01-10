@@ -2,7 +2,7 @@
 #include "inttypes.h"
 
 #define MEMORY_SIZE 65536
-#define VIDEO_MEMORY 8192
+#define VIDEO_MEMORY 32768
 #define VIDEO_MEMORY_SIZE 32768
 
 typedef union{

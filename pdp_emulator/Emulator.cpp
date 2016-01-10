@@ -179,6 +179,7 @@ Emulator::Emulator()
 	this->registers.flagV = 0;
 	this->registers.flagZ = 0;
 	this->memory = new char[MEMORY_SIZE];
+	memset(this->memory, 0, MEMORY_SIZE);
 }
 
 int Emulator::writeBufToMemory(char* buf, unsigned int position, unsigned int size){

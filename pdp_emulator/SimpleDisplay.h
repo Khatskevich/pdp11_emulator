@@ -3,8 +3,8 @@
 #include "DisassemblerFuncImpl.h"
 #include "EmulatorFuncImpl.h"
 #include "BITMAP.h"
-#define DISPLAY_WIDTH 64
-#define DISPLAY_HEIGHT 64
+#define DISPLAY_WIDTH 512
+#define DISPLAY_HEIGHT 256
 #define COLOR_DEPTH 2
 #include <list>
 using namespace System::Drawing;

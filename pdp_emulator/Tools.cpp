@@ -32,19 +32,26 @@ BITMAP* Tools::readBMP(char* filename)
 	return new BITMAP(height, width, data);
 }
 
-bool Tools::getBiteByPosition(uint16_t* buffer, uint16_t position) {
-	int index_of_word = position / sizeof(position);
-	int index_of_byte = position % sizeof(position);
-	return (buffer[index_of_word] & (1 << index_of_byte));
+bool Tools::getBiteByPosition(int16_t* buffer, int position) {
+	int index_of_word = position / 16;
+	int index_of_byte = position % 16;
+	uint16_t cell = ((uint16_t*)buffer)[index_of_word];
+	if (cell & (1 << index_of_byte))
+		return true;
+	else
+		return false;
 }
 
-bool Tools::isBlack(Color color) {
-	return ((color.R + color.G + color.B) / 3 < 124);
+bool Tools::isBlack(int r, int g, int b) { 
+	if ((r + g + b) / 3 < 128)
+		return true;
+	else 
+		return false;
 }
 
-void Tools::setBiteByPosition(uint16_t* buffer, uint16_t position, bool bite) {
-	int index_of_word = position / sizeof(position);
-	int index_of_byte = position % sizeof(position);
+void Tools::setBiteByPosition(int16_t* buffer, int position, bool bite) {
+	int index_of_word = position / 16;
+	int index_of_byte = position % 16;
 	if (bite) {
 		buffer[index_of_word] |= (1 << index_of_byte);
 	}

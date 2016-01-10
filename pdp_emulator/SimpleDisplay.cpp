@@ -8,12 +8,11 @@
 	}
 
 	void SimpleDisplay::startDisplaying(){
-		Bitmap^ image2;
+/*		Bitmap^ image2;
 		image2 = gcnew Bitmap(DISPLAY_WIDTH, DISPLAY_HEIGHT, PixelFormat::Format32bppArgb);
 		BITMAP *bitmap;
 		bitmap = Tools::readBMP("..\\music.bmp");
 		unsigned char* tmp = bitmap->getBuffer();
-		//memcpy(tmp, videoMemory, WIDTH*HEIGHT * 3);
 		int x;
 		int y;
 		unsigned char r, g, b;
@@ -24,12 +23,13 @@
 			{
 			
 				//Color newColor = Color::FromArgb(tmp[i], tmp[i+1], tmp[i+2]);
-				Color newColor = ((tmp[i] + tmp[i + 1] + tmp[i + 2]) / 3 < 124) ? Color::FromArgb(0, 0, 0) : Color::FromArgb(255, 255, 255);
-				image2->SetPixel(x, y, newColor);
+				Color newColor = Tools::isBlack(tmp[i], tmp[i + 1], tmp[i + 2]) ? Color::FromArgb(0, 0, 0) : Color::FromArgb(255, 255, 255);
+				image2->SetPixel(y, x, newColor);
 				i += 3;
 			}
 		}
-		displayContainer->Image = image2;
+		displayContainer->Image = image2;*/
+		populateFrame();
 	}
 
 	
@@ -42,8 +42,8 @@
 		{
 			for (y = 0; y < DISPLAY_WIDTH; y++)
 			{
-				Color newColor = (Tools::getBiteByPosition((uint16_t*)videoMemory, i)) ? Color::FromArgb(0, 0, 0) : Color::FromArgb(255, 255, 255);
-				image->SetPixel(x, y, newColor);
+				Color newColor = (Tools::getBiteByPosition((int16_t*)videoMemory, i)) ? Color::FromArgb(255, 255, 255) : Color::FromArgb(0, 0, 0);
+				image->SetPixel(y, x, newColor);
 				i++;
 			}
 		}
