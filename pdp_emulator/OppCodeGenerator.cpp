@@ -44,7 +44,7 @@ enum {
 
 #define IMAGE_STARTING_ADDRESS 2*25
 #define BYTE 8
-int16_t* OppCodeGenerator::testGenerate(char *path) {
+int16_t* OppCodeGenerator::testGenerate(const char *path) {
 	int16_t *oppCodeProgramm = (int16_t *)calloc(sizeof(int8_t), MEMORY_SIZE);
 
 

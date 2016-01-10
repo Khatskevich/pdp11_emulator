@@ -76,12 +76,14 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		}
 
 
-		void startSimpleDisplay() {
+		void startSimpleDisplay(String^ path) {
 			//display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
 			
 			showRegisters();
 			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
-			int16_t* raw = oppCodeGenerator->testGenerate("..\\music.bmp");
+			string str; 
+			MarshalString(path, str);
+			int16_t* raw = oppCodeGenerator->testGenerate(str.c_str());
 			memcpy((void*)emulator->memory, (void*)raw, MEMORY_SIZE);
 			display->populateFrame();
 			free(raw);
@@ -259,7 +261,19 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		}
 #pragma endregion
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-		startSimpleDisplay();
+
+		OpenFileDialog^ openFileDialog1 = gcnew OpenFileDialog;
+
+		openFileDialog1->InitialDirectory = "..\\";
+		openFileDialog1->Filter = "bmp files (*.bmp)|*.bmp|All files (*.*)|*.*";
+		openFileDialog1->FilterIndex = 2;
+		openFileDialog1->RestoreDirectory = true;
+
+		if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+		{
+			startSimpleDisplay(openFileDialog1->FileName);
+		}
+		
 	}
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 	}
