@@ -91,6 +91,9 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 				unsigned int size = 0;
 				std::string temp = Disassembler::disassemble((char*)(raw + i), size);
 				listBox1->Items->Add("   " + toHex(i*2) + "     " + toBin(raw[i]) + "   " + gcnew String(temp.c_str()) );
+				for (int j = 1; j <= size; j++){
+					listBox1->Items->Add("   " + toHex((i+j) * 2) + "     " + toBin(raw[i+j]) + " Data");
+				}
 				i += size+1;
 			}
 		}
@@ -205,15 +208,14 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			this->listBox1->FormattingEnabled = true;
 			this->listBox1->Location = System::Drawing::Point(339, 41);
 			this->listBox1->Name = L"listBox1";
-			this->listBox1->Size = System::Drawing::Size(262, 186);
+			this->listBox1->Size = System::Drawing::Size(264, 433);
 			this->listBox1->TabIndex = 8;
 			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::listBox1_SelectedIndexChanged);
-			this->listBox1->Sorted = false;
 			// 
 			// listBox2
 			// 
 			this->listBox2->FormattingEnabled = true;
-			this->listBox2->Location = System::Drawing::Point(339, 233);
+			this->listBox2->Location = System::Drawing::Point(62, 234);
 			this->listBox2->Name = L"listBox2";
 			this->listBox2->Size = System::Drawing::Size(262, 238);
 			this->listBox2->TabIndex = 9;
@@ -240,7 +242,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(659, 500);
+			this->ClientSize = System::Drawing::Size(612, 483);
 			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->listBox2);
