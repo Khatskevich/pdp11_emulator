@@ -13,7 +13,7 @@ void parseJustOperand(Operation* operation, unsigned int &size, stringstream& ss
 		{
 		case 2:
 			next_command_read++;
-			ss << "#" << hex << operationWithOffset(operation, next_command_read)->raw << " " << sizeof(Operation) << " ";
+			ss << "#" << hex << operationWithOffset(operation, next_command_read)->raw << " ";
 			break;
 		case 3:
 			next_command_read++;

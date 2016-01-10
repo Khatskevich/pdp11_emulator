@@ -33,8 +33,8 @@ uint16_t* getOperand(Operand operand, Emulator * emulator){
 			emulator->incPc();
 			addr = (uint16_t*)&emulator->memory[*A + emulator->registers.R[R_PC] ];
 			return (uint16_t*)&emulator->memory[*addr];
-		default:
-			break;
+		//default:
+			//break;
 		}
 	}
 	else if (operand.split.reg == R_STACK){
