@@ -10,5 +10,5 @@ private:
 	void populateImage(int8_t * buffer, BITMAP *bitmap);
 	
 public:
-	int16_t *testGenerate(char *path);
+	int16_t *testGenerate(const char *path);
 };

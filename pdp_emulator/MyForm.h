@@ -21,33 +21,13 @@ namespace pdp_emulator {
 	{
 	private:	Emulator* emulator;
 	private:	OppCodeGenerator* oppCodeGenerator;
-
-
-
-
-
-
-
 	private: System::Windows::Forms::ListBox^  listBox1;
 	private: System::Windows::Forms::ListBox^  listBox2;
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::TextBox^  textBox1;
-
-
-
-
-
-
-
 			 SimpleDisplay^ display;
 	public:
-		template <class T>
-string to_string(T t, ios_base & (*f)(ios_base&))
-{
-  ostringstream oss;
-  oss << f << t;
-  return oss.str();
-}
+
 		MyForm(void)
 		{
 			InitializeComponent();
@@ -76,12 +56,13 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		}
 
 
-		void startSimpleDisplay() {
-			//display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
-			
+		void run(String^ path) {
+		
 			showRegisters();
 			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
-			int16_t* raw = oppCodeGenerator->testGenerate("..\\music.bmp");
+			string str; 
+			MarshalString(path, str);
+			int16_t* raw = oppCodeGenerator->testGenerate(str.c_str());
 			memcpy((void*)emulator->memory, (void*)raw, MEMORY_SIZE);
 			display->populateFrame();
 			free(raw);
@@ -107,10 +88,6 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		}
 
 		void step() {
-
-			
-	
-
 			int steps_num = 1;
 			try{
 				steps_num = int::Parse(textBox1->Text);
@@ -259,7 +236,20 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		}
 #pragma endregion
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-		startSimpleDisplay();
+
+		OpenFileDialog^ openFileDialog1 = gcnew OpenFileDialog;
+
+		openFileDialog1->InitialDirectory = "..\\";
+		openFileDialog1->Filter = "bmp files (*.bmp)|*.bmp";
+		openFileDialog1->FilterIndex = 2;
+		openFileDialog1->RestoreDirectory = true;
+
+		if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+		{	
+			emulator->resetRegisters();
+			run(openFileDialog1->FileName);
+		}
+		
 	}
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 	}

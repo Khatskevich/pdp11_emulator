@@ -7,7 +7,7 @@ Tools::Tools()
 {
 }
 
-BITMAP* Tools::readBMP(char* filename)
+BITMAP* Tools::readBMP(const char* filename)
 {
 	int i;
 	FILE* f = fopen(filename, "rb");
