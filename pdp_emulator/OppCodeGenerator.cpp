@@ -110,13 +110,21 @@ void OppCodeGenerator::populateImage(int8_t *oppCodeProgramm, BITMAP *bitmap) {
 	
 	int x, y;
 	int additional_width_per_line = 0;
+	int alignment = 0;
 	if (bitmap->getWidth() % 8!=0){
 		additional_width_per_line = 8 - (bitmap->getWidth() % 8);
 	}
+	if (bitmap->getWidth() * 3 % 4 != 0){
+
+	}
 	for (y = 0; y < bitmap->getHeight(); y++) {
 		for ( x = 0; x < bitmap->getWidth(); x++) {
-			Tools::setBiteByPosition((int16_t *)oppCodeProgramm, (bitmap->getHeight() - y)*( additional_width_per_line + bitmap->getWidth()) + x, Tools::isBlack(tmp[indexInBitmap], tmp[indexInBitmap + 1], tmp[indexInBitmap + 2]));
+			Tools::setBiteByPosition((int16_t *)oppCodeProgramm, (bitmap->getHeight() - y-1)*(additional_width_per_line + bitmap->getWidth())  + x, Tools::isBlack(tmp[indexInBitmap], tmp[indexInBitmap + 1], tmp[indexInBitmap + 2]));
 			indexInBitmap += 3;
+			//if (x == bitmap->getWidth() - 1)
+			//	indexInBitmap += 4 - (indexInBitmap % 4);
+			
+	
 		}
 	}
 	bitmap->setWidth(bitmap->getWidth() + additional_width_per_line);
