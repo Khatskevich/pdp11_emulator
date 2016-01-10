@@ -21,33 +21,13 @@ namespace pdp_emulator {
 	{
 	private:	Emulator* emulator;
 	private:	OppCodeGenerator* oppCodeGenerator;
-
-
-
-
-
-
-
 	private: System::Windows::Forms::ListBox^  listBox1;
 	private: System::Windows::Forms::ListBox^  listBox2;
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::TextBox^  textBox1;
-
-
-
-
-
-
-
 			 SimpleDisplay^ display;
 	public:
-		template <class T>
-string to_string(T t, ios_base & (*f)(ios_base&))
-{
-  ostringstream oss;
-  oss << f << t;
-  return oss.str();
-}
+
 		MyForm(void)
 		{
 			InitializeComponent();
@@ -76,9 +56,8 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		}
 
 
-		void startSimpleDisplay(String^ path) {
-			//display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
-			
+		void run(String^ path) {
+		
 			showRegisters();
 			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
 			string str; 
@@ -109,10 +88,6 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		}
 
 		void step() {
-
-			
-	
-
 			int steps_num = 1;
 			try{
 				steps_num = int::Parse(textBox1->Text);
@@ -270,8 +245,9 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 		openFileDialog1->RestoreDirectory = true;
 
 		if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
-		{
-			startSimpleDisplay(openFileDialog1->FileName);
+		{	
+			emulator->resetRegisters();
+			run(openFileDialog1->FileName);
 		}
 		
 	}
