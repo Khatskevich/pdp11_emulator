@@ -74,7 +74,7 @@ int16_t* OppCodeGenerator::testGenerate(char *path) {
 	oppCodeProgramm[6] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R4));
 	oppCodeProgramm[7] = VIDEO_MEMORY;
 	oppCodeProgramm[8] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R1));
-	oppCodeProgramm[9] = -bitmap->getWidth() / BYTE;
+	oppCodeProgramm[9] = -8;
 	oppCodeProgramm[10] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R5));
 	oppCodeProgramm[11] = 512 / BYTE;
 	oppCodeProgramm[12] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R1), OPERAND(REG, R5));
@@ -90,14 +90,15 @@ INC R2
 BNE XLOOP1
 	*/
 	oppCodeProgramm[13] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R1));
-	oppCodeProgramm[14] = -bitmap->getWidth() / BYTE;
+	oppCodeProgramm[14] = -8 ;
 
 	oppCodeProgramm[15] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R3), OPERAND(AUTOINC, R4));
 	oppCodeProgramm[16] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R1));
-	oppCodeProgramm[17] = GENERATE_BRANCH_COMMAND(BNE, -2);
-	oppCodeProgramm[18] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R5), OPERAND(REG, R4));
-	oppCodeProgramm[19] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R2));
-	oppCodeProgramm[20] = GENERATE_BRANCH_COMMAND(BNE, -7); 
+	oppCodeProgramm[17] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R1));
+	oppCodeProgramm[18] = GENERATE_BRANCH_COMMAND(BNE, -3);
+	oppCodeProgramm[19] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R5), OPERAND(REG, R4));
+	oppCodeProgramm[20] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R2));
+	oppCodeProgramm[21] = GENERATE_BRANCH_COMMAND(BNE, -8); 
 	populateImage((int8_t*)oppCodeProgramm + IMAGE_STARTING_ADDRESS, bitmap);
 	return oppCodeProgramm;
 }

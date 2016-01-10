@@ -86,11 +86,11 @@ uint16_t* getOperand(Operand operand, Emulator * emulator){
 			return (uint16_t*)(emulator->memory+emulator->registers.R[operand.split.reg]);
 		case 2:
 			result = (uint16_t*)(emulator->memory + emulator->registers.R[operand.split.reg]);
-			emulator->registers.R[operand.split.reg]++;
+			emulator->registers.R[operand.split.reg]+=2;
 			return result;
 		case 3:
 			addr = (uint16_t*)(emulator->memory + emulator->registers.R[operand.split.reg]);
-			emulator->registers.R[operand.split.reg]++;
+			emulator->registers.R[operand.split.reg]+=2;
 			return (uint16_t*)&emulator->memory[*addr];
 		case 4:
 			addr = (uint16_t*)(emulator->memory + emulator->registers.R[operand.split.reg]);
