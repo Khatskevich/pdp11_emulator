@@ -36,7 +36,7 @@ enum {
 #define OPERAND(mode, reg) ((((int16_t)mode) << 3) + reg)
 #define GENERATE_DOUBLE_OPERANDS_COMMAND(command,ss, dd) ((((int16_t)command) << 12) + (((int16_t)ss << 6) + (dd)))
 #define GENERATE_ONE_OPERAND_COMMAND(command, op) ((((int16_t)command) << 6) + (op))
-#define GENERATE_BRANCH_COMMAND(command, offset) ((((int16_t)command) << 8) + (offset))
+#define GENERATE_BRANCH_COMMAND(command, offset) ((((uint16_t)command) << 8) + ((uint8_t)offset))
 
 
 
