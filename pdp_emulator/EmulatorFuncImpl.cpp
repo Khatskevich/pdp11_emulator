@@ -118,12 +118,17 @@ uint16_t* getOperand(Operand operand, Emulator * emulator){
 }
 
 #define STANDARD_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W() \
+	unsigned int next_command_read = 0;\
 	emulator->incPc();\
 	Operand operand;\
-	operand.raw = operation->OPERANDS.sS;\
+	operand.raw = 0;\
+	operand.split.mode = operation->DWORD.ss;\
+	operand.split.reg = operation->DWORD.SS;\
 	uint16_t* source = getOperand(operand, emulator);\
 	uint16_t source_val = *source; \
-	operand.raw = operation->OPERANDS.dD;\
+	operand.raw = 0;\
+	operand.split.mode = operation->DWORD.dd;\
+	operand.split.reg = operation->DWORD.DD;\
 	uint16_t* destination = getOperand(operand, emulator);\
 	uint16_t destination_val = *destination; 
 

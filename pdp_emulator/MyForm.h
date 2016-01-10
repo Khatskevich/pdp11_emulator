@@ -29,6 +29,8 @@ namespace pdp_emulator {
 
 
 	private: System::Windows::Forms::ListBox^  listBox1;
+	private: System::Windows::Forms::ListBox^  listBox2;
+	private: System::Windows::Forms::Button^  button2;
 
 
 
@@ -75,17 +77,37 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 
 		void startSimpleDisplay() {
 			//display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
+			
+			showRegisters();
+			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)emulator->getVideoMemory());
 			int16_t* raw = oppCodeGenerator->testGenerate("..\\music.bmp");
-			display->setUpSimpleDisplay(this->pictureBox1, (uint8_t *)raw);
+			memcpy((void*)emulator->memory, (void*)raw, MEMORY_SIZE);
 			display->populateFrame();
-
+			free(raw);
+			raw = (int16_t*) emulator->memory;
 			int i = 0;
 			while ( i < 100) {
 				unsigned int size = 0;
 				std::string temp = Disassembler::disassemble((char*)(raw + i), size);
-				listBox1->Items->Add(toHex(i) + "     " + toBin(raw[i]) + "   " + gcnew String(temp.c_str()) );
+				listBox1->Items->Add(toHex(i*2) + "     " + toBin(raw[i]) + "   " + gcnew String(temp.c_str()) );
 				i += size+1;
 			}
+		}
+		void step() {
+			emulator->step();
+			showRegisters();
+		}
+		void showRegisters(){
+			listBox2->Items->Clear();
+			for (int i = 0; i < 8; i++){
+				listBox2->Items->Add("R" + toHex(i) + " " + toHex(emulator->registers.R[i]));
+			}
+			listBox2->Items->Add("flagC" + " " + toHex(emulator->registers.flagC));
+			listBox2->Items->Add("flagI" + " " + toHex(emulator->registers.flagI));
+			listBox2->Items->Add("flagN" + " " + toHex(emulator->registers.flagN));
+			listBox2->Items->Add("flagT" + " " + toHex(emulator->registers.flagT));
+			listBox2->Items->Add("flagV" + " " + toHex(emulator->registers.flagV));
+			listBox2->Items->Add("flagZ" + " " + toHex(emulator->registers.flagZ));
 		}
 
 	protected:
@@ -119,6 +141,8 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			this->listBox1 = (gcnew System::Windows::Forms::ListBox());
+			this->listBox2 = (gcnew System::Windows::Forms::ListBox());
+			this->button2 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -128,7 +152,7 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(75, 23);
 			this->button1->TabIndex = 0;
-			this->button1->Text = L"next";
+			this->button1->Text = L"Load";
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
 			// 
@@ -150,11 +174,31 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 			this->listBox1->TabIndex = 8;
 			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::listBox1_SelectedIndexChanged);
 			// 
+			// listBox2
+			// 
+			this->listBox2->FormattingEnabled = true;
+			this->listBox2->Location = System::Drawing::Point(339, 233);
+			this->listBox2->Name = L"listBox2";
+			this->listBox2->Size = System::Drawing::Size(262, 238);
+			this->listBox2->TabIndex = 9;
+			// 
+			// button2
+			// 
+			this->button2->Location = System::Drawing::Point(271, 11);
+			this->button2->Name = L"button2";
+			this->button2->Size = System::Drawing::Size(75, 23);
+			this->button2->TabIndex = 10;
+			this->button2->Text = L"step";
+			this->button2->UseVisualStyleBackColor = true;
+			this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(625, 326);
+			this->ClientSize = System::Drawing::Size(659, 500);
+			this->Controls->Add(this->button2);
+			this->Controls->Add(this->listBox2);
 			this->Controls->Add(this->listBox1);
 			this->Controls->Add(this->pictureBox1);
 			this->Controls->Add(this->button1);
@@ -178,6 +222,9 @@ string to_string(T t, ios_base & (*f)(ios_base&))
 private: System::Void pictureBox1_Click(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void listBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
+	step();
 }
 };
 }

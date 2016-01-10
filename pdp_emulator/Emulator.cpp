@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Emulator.h"
 #include "EmulatorFuncImpl.h"
+#include "Disassembler.h"
 #include "stdlib.h"
 #include <iostream>
 #define _CRT_SECURE_DEPRECATE_MEMORY
@@ -228,6 +229,14 @@ uint16_t Emulator::readWordFromMemory(unsigned int position){
 
 
 int Emulator::step(){
+	Operation * operation = (Operation*)&this->memory[registers.R[R_PC]];
+	if (Disassembler::checkIfItIsDoubleOperandCommand(operation ) ){
+		opOperationsDoubleOperandGroup[Disassembler::getIndexForDobleOperandCommandInFunctionsArray(operation)](operation, this);
+	}
+	else{
+		uint32_t index = Disassembler::getIndexForNoDobleOperandCommandInFunctionsArray(operation);
+		opOperationsNoDoubleOperandGroup[index](operation, this);
+	}
 	return 0;
 }
 

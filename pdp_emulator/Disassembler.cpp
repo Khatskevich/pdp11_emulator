@@ -167,12 +167,12 @@ Disassembler::Disassembler()
 	Disassembler();
 }
 
-unsigned int getIndexForDobleOperandCommandInFunctionsArray(Operation* operation){
+unsigned int Disassembler::getIndexForDobleOperandCommandInFunctionsArray(Operation* operation){
 	return operation->raw >> 12;
 }
 
 
-unsigned int getIndexForNoDobleOperandCommandInFunctionsArray(Operation* operation){
+unsigned int Disassembler::getIndexForNoDobleOperandCommandInFunctionsArray(Operation* operation){
 	return (operation->OPERANDS.word << 3) + operation->OPERANDS.sS;
 }
 
