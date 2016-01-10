@@ -240,7 +240,7 @@ namespace pdp_emulator {
 		OpenFileDialog^ openFileDialog1 = gcnew OpenFileDialog;
 
 		openFileDialog1->InitialDirectory = "..\\";
-		openFileDialog1->Filter = "bmp files (*.bmp)|*.bmp|All files (*.*)|*.*";
+		openFileDialog1->Filter = "bmp files (*.bmp)|*.bmp";
 		openFileDialog1->FilterIndex = 2;
 		openFileDialog1->RestoreDirectory = true;
 

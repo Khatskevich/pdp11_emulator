@@ -68,7 +68,7 @@ int16_t* OppCodeGenerator::testGenerate(const char *path) {
 	BITMAP *bitmap = Tools::readBMP(path);
 	populateImage((int8_t*)oppCodeProgramm + IMAGE_STARTING_ADDRESS, bitmap);
 	oppCodeProgramm[0] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R0));
-	oppCodeProgramm[1] = 512 / BYTE;
+	oppCodeProgramm[1] = DISPLAY_WIDTH / BYTE;
 	oppCodeProgramm[2] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R2));
 	oppCodeProgramm[3] = bitmap->getHeight() / BYTE;
 	oppCodeProgramm[4] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R3));
@@ -78,7 +78,7 @@ int16_t* OppCodeGenerator::testGenerate(const char *path) {
 	oppCodeProgramm[8] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R1));
 	oppCodeProgramm[9] = -bitmap->getWidth() / BYTE;
 	oppCodeProgramm[10] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R5));
-	oppCodeProgramm[11] = 512 / BYTE;
+	oppCodeProgramm[11] = DISPLAY_WIDTH / BYTE;
 	oppCodeProgramm[12] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R1), OPERAND(REG, R5));
 
 	
