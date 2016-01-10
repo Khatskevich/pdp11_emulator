@@ -33,8 +33,8 @@ uint16_t* getOperand(Operand operand, Emulator * emulator){
 			emulator->incPc();
 			addr = (uint16_t*)&emulator->memory[*A + emulator->registers.R[R_PC] ];
 			return (uint16_t*)&emulator->memory[*addr];
-		default:
-			break;
+		//default:
+			//break;
 		}
 	}
 	else if (operand.split.reg == R_STACK){
@@ -86,11 +86,11 @@ uint16_t* getOperand(Operand operand, Emulator * emulator){
 			return (uint16_t*)(emulator->memory+emulator->registers.R[operand.split.reg]);
 		case 2:
 			result = (uint16_t*)(emulator->memory + emulator->registers.R[operand.split.reg]);
-			emulator->registers.R[operand.split.reg]++;
+			emulator->registers.R[operand.split.reg]+=1;
 			return result;
 		case 3:
 			addr = (uint16_t*)(emulator->memory + emulator->registers.R[operand.split.reg]);
-			emulator->registers.R[operand.split.reg]++;
+			emulator->registers.R[operand.split.reg]+=1;
 			return (uint16_t*)&emulator->memory[*addr];
 		case 4:
 			addr = (uint16_t*)(emulator->memory + emulator->registers.R[operand.split.reg]);
@@ -118,14 +118,21 @@ uint16_t* getOperand(Operand operand, Emulator * emulator){
 }
 
 #define STANDARD_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W() \
+	unsigned int next_command_read = 0;\
 	emulator->incPc();\
 	Operand operand;\
-	operand.raw = operation->OPERANDS.sS;\
+	operand.raw = 0;\
+	operand.split.mode = operation->DWORD.ss;\
+	operand.split.reg = operation->DWORD.SS;\
 	uint16_t* source = getOperand(operand, emulator);\
 	uint16_t source_val = *source; \
-	operand.raw = operation->OPERANDS.dD;\
+	operand.raw = 0;\
+	operand.split.mode = operation->DWORD.dd;\
+	operand.split.reg = operation->DWORD.DD;\
 	uint16_t* destination = getOperand(operand, emulator);\
 	uint16_t destination_val = *destination; 
+
+
 
 #define SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W() \
 		int16_t * dst_temp = (int16_t*)destination; \
@@ -138,6 +145,17 @@ uint16_t* getOperand(Operand operand, Emulator * emulator){
 		else\
 		{ emulator->registers.flagN = 0; }; \
 		 emulator->registers.flagV = 0;
+
+
+#define STANDARD_SINGLE_OPERAND_OPERATION_PERFORMING_PART_W() \
+	unsigned int next_command_read = 0;\
+	emulator->incPc();\
+	Operand operand;\
+	operand.raw = 0;\
+	operand.split.mode = operation->DWORD.dd;\
+	operand.split.reg = operation->DWORD.DD;\
+	uint16_t* destination = getOperand(operand, emulator);\
+	uint16_t destination_val = *destination; 
 
 void default(Operation* operation, Emulator * emulator){ cout << "Uncnown operation" << oct << operation->raw << endl; emulator->incPc(); };
 void MOVW(Operation* operation, Emulator * emulator) { 
@@ -165,8 +183,11 @@ void ADD(Operation* operation, Emulator * emulator) {
 		*destination += *source;
 	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
 };
-void SUB(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-
+void SUB(Operation* operation, Emulator * emulator) {
+	STANDARD_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
+		*destination -= *source;
+	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
+};
 void HALT_WAIT_RTI_IOT_RESET(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void HALT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void WAIT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
@@ -175,10 +196,31 @@ void IOT(Operation* operation, Emulator * emulator) { default(operation, emulato
 void RESET(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void JMP(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void RTS(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void SWAP(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void BR(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void BNE(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void BEQ(Operation* operation, Emulator * emulator) { default(operation, emulator); };
+void SWAP(Operation* operation, Emulator * emulator){
+	STANDARD_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
+	*destination = source_val;
+	*source = destination_val;
+	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
+};
+void BR(Operation* operation, Emulator * emulator) {
+	emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX * 2;
+};
+void BNE(Operation* operation, Emulator * emulator) {
+	if (!emulator->registers.flagZ){
+		emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX*2;
+	}
+	else{
+		emulator->incPc();
+	}
+};
+void BEQ(Operation* operation, Emulator * emulator){
+	if (emulator->registers.flagZ){
+		emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX * 2;
+	}
+	else{
+		emulator->incPc();
+	}
+};
 void BGE(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BLT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BGT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
@@ -186,8 +228,16 @@ void JSR(Operation* operation, Emulator * emulator) { default(operation, emulato
 
 void CLRW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void COMW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void INCW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void DECW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
+void INCW(Operation* operation, Emulator * emulator) {
+	STANDARD_SINGLE_OPERAND_OPERATION_PERFORMING_PART_W();
+	*destination = *destination + 1;
+	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W();
+};
+void DECW(Operation* operation, Emulator * emulator) {
+	STANDARD_SINGLE_OPERAND_OPERATION_PERFORMING_PART_W();
+	*destination = *destination - 1;
+	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W();
+};
 void NEGW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void ADCW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void SBCW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
@@ -210,8 +260,22 @@ void ROLB(Operation* operation, Emulator * emulator) { default(operation, emulat
 void ASRB(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void ASLB(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 
-void BPL(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void BMI(Operation* operation, Emulator * emulator) { default(operation, emulator); };
+void BPL(Operation* operation, Emulator * emulator){
+	if (!emulator->registers.flagN){
+		emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX * 2;
+	}
+	else{
+		emulator->incPc();
+	}
+};
+void BMI(Operation* operation, Emulator * emulator){
+	if (emulator->registers.flagN){
+		emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX * 2;
+	}
+	else{
+		emulator->incPc();
+	}
+};
 void BHI(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BLOS(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BVC(Operation* operation, Emulator * emulator) { default(operation, emulator); };

@@ -1,4 +1,5 @@
 pdp_emulator.opensdf
 pdp_emulator.sdf
-Debug/*
-pdp_emulator/Debug/*
+ipch/
+Debug/
+pdp_emulator/Debug/

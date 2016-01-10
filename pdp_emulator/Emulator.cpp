@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "Emulator.h"
 #include "EmulatorFuncImpl.h"
+#include "Disassembler.h"
 #include "stdlib.h"
 #include <iostream>
 #define _CRT_SECURE_DEPRECATE_MEMORY
 #include <memory.h>
 #include "inttypes.h"
 using namespace std;
+
 
 // this array of functions is responsible for 2 operand functions
 void(*opOperationsDoubleOperandGroup[])(Operation *, Emulator* ) = {
@@ -41,29 +43,29 @@ void(*opOperationsNoDoubleOperandGroup[])(Operation *, Emulator*) = {
 	/* 0002 */	RTS, // RTS 00020R ----
 	/* 0003 */	SWAP, // SWAP 0003DD ++00
 	/* 0004 */	BR, // BR 0004XX ----
-	/* 0005 */	default,
-	/* 0006 */	default,
-	/* 0007 */	default,
+	/* 0005 */	BR,
+	/* 0006 */	BR,
+	/* 0007 */	BR ,
 	/* 0010 */	BNE, // BNE 0010XX ----
-	/* 0011 */	default,
-	/* 0012 */	default,
-	/* 0013 */	default,
+	/* 0011 */	BNE,
+	/* 0012 */	BNE,
+	/* 0013 */	BNE,
 	/* 0014 */	BEQ, // BEQ 0014XX -----
-	/* 0015 */	default,
-	/* 0016 */	default,
-	/* 0017 */	default,
+	/* 0015 */	BEQ,
+	/* 0016 */	BEQ,
+	/* 0017 */	BEQ,
 	/* 0020 */	BGE, // BGE 0020XX ----
-	/* 0021 */	default,
-	/* 0022 */	default,
-	/* 0023 */	default,
+	/* 0021 */	BGE,
+	/* 0022 */	BGE,
+	/* 0023 */	BGE,
 	/* 0024 */	BLT, // BLT 0024XX ----
-	/* 0025 */	default,
-	/* 0026 */	default,
-	/* 0027 */	default,
+	/* 0025 */	BLT,
+	/* 0026 */	BLT,
+	/* 0027 */	BLT,
 	/* 0030 */	BGT, // BGT 0030XX -----
-	/* 0031 */	default,
-	/* 0032 */	default,
-	/* 0033 */	default,
+	/* 0031 */	BGT,
+	/* 0032 */	BGT,
+	/* 0033 */	BGT,
 	/* 0034 */	default,
 	/* 0035 */	default,
 	/* 0036 */	default,
@@ -101,37 +103,37 @@ void(*opOperationsNoDoubleOperandGroup[])(Operation *, Emulator*) = {
 	/* 0076 */	default,
 	/* 0077 */	default,
 	/* 1000 */	BPL, // BPL 1000XX ----
-	/* 1001 */	default,
-	/* 1002 */	default,
-	/* 1003 */	default,
+	/* 1001 */	BPL,
+	/* 1002 */	BPL,
+	/* 1003 */	BPL,
 	/* 1004 */	BMI, // BMI 1004XX ----
-	/* 1005 */	default,
-	/* 1006 */	default,
-	/* 1007 */	default,
+	/* 1005 */	BMI,
+	/* 1006 */	BMI,
+	/* 1007 */	BMI,
 	/* 1010 */	BHI, // BHI 1010XX ---
-	/* 1011 */	default,
-	/* 1012 */	default,
-	/* 1013 */	default,
+	/* 1011 */	BHI,
+	/* 1012 */	BHI,
+	/* 1013 */	BHI,
 	/* 1014 */	BLOS, // BLOS 1014XX ----
-	/* 1015 */	default,
-	/* 1016 */	default,
-	/* 1017 */	default,
+	/* 1015 */	BLOS,
+	/* 1016 */	BLOS,
+	/* 1017 */	BLOS,
 	/* 1020 */	BVC, // BVC 1020XX ----
-	/* 1021 */	default,
-	/* 1022 */	default,
-	/* 1023 */	default,
+	/* 1021 */	BVC,
+	/* 1022 */	BVC,
+	/* 1023 */	BVC,
 	/* 1024 */	BVS, // BVC 1024XX ---
-	/* 1025 */	default,
-	/* 1026 */	default,
-	/* 1027 */	default,
+	/* 1025 */	BVS,
+	/* 1026 */	BVS,
+	/* 1027 */	BVS,
 	/* 1030 */	BCC, // BCC(BHIS) 1030XX ----
-	/* 1031 */	default,
-	/* 1032 */	default,
-	/* 1033 */	default,
+	/* 1031 */	BCC,
+	/* 1032 */	BCC,
+	/* 1033 */	BCC,
 	/* 1034 */	BCS, // BCS(BLO) 1034XX ----
-	/* 1035 */	default,
-	/* 1036 */	default,
-	/* 1037 */	default,
+	/* 1035 */	BCS,
+	/* 1036 */	BCS,
+	/* 1037 */	BCS,
 	/* 1040 */	EMT, // EMT
 	/* 1041 */	EMT, // EMT
 	/* 1042 */	EMT, // EMT
@@ -168,6 +170,12 @@ void(*opOperationsNoDoubleOperandGroup[])(Operation *, Emulator*) = {
 
 Emulator::Emulator()
 {
+	resetRegisters();
+	this->memory = new char[MEMORY_SIZE];
+	memset(this->memory, 0, MEMORY_SIZE);
+}
+
+void Emulator::resetRegisters() {
 	for (int i = 0; i < 8; i++){
 		this->registers.R[i] = 0;
 	}
@@ -177,7 +185,6 @@ Emulator::Emulator()
 	this->registers.flagT = 0;
 	this->registers.flagV = 0;
 	this->registers.flagZ = 0;
-	this->memory = new char[MEMORY_SIZE];
 }
 
 int Emulator::writeBufToMemory(char* buf, unsigned int position, unsigned int size){
@@ -226,9 +233,21 @@ uint16_t Emulator::readWordFromMemory(unsigned int position){
 
 
 int Emulator::step(){
+	Operation * operation = (Operation*)&this->memory[registers.R[R_PC]];
+	if (Disassembler::checkIfItIsDoubleOperandCommand(operation ) ){
+		opOperationsDoubleOperandGroup[Disassembler::getIndexForDobleOperandCommandInFunctionsArray(operation)](operation, this);
+	}
+	else{
+		uint32_t index = Disassembler::getIndexForNoDobleOperandCommandInFunctionsArray(operation);
+		opOperationsNoDoubleOperandGroup[index](operation, this);
+	}
 	return 0;
 }
 
 void Emulator::incPc(){
 	this->registers.R[R_PC]+=2;
+}
+
+char* Emulator::getVideoMemory(){
+	return &memory[VIDEO_MEMORY];
 }
