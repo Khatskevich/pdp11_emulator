@@ -132,6 +132,8 @@ uint16_t* getOperand(Operand operand, Emulator * emulator){
 	uint16_t* destination = getOperand(operand, emulator);\
 	uint16_t destination_val = *destination; 
 
+
+
 #define SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W() \
 		int16_t * dst_temp = (int16_t*)destination; \
 		if (!(*dst_temp)) \
@@ -143,6 +145,17 @@ uint16_t* getOperand(Operand operand, Emulator * emulator){
 		else\
 		{ emulator->registers.flagN = 0; }; \
 		 emulator->registers.flagV = 0;
+
+
+#define STANDARD_SINGLE_OPERAND_OPERATION_PERFORMING_PART_W() \
+	unsigned int next_command_read = 0;\
+	emulator->incPc();\
+	Operand operand;\
+	operand.raw = 0;\
+	operand.split.mode = operation->DWORD.dd;\
+	operand.split.reg = operation->DWORD.DD;\
+	uint16_t* destination = getOperand(operand, emulator);\
+	uint16_t destination_val = *destination; 
 
 void default(Operation* operation, Emulator * emulator){ cout << "Uncnown operation" << oct << operation->raw << endl; emulator->incPc(); };
 void MOVW(Operation* operation, Emulator * emulator) { 
@@ -182,7 +195,14 @@ void JMP(Operation* operation, Emulator * emulator) { default(operation, emulato
 void RTS(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void SWAP(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BR(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void BNE(Operation* operation, Emulator * emulator) { default(operation, emulator); };
+void BNE(Operation* operation, Emulator * emulator) {
+	if (!emulator->registers.flagZ){
+		emulator->registers.R[R_PC] = emulator->registers.R[R_PC] + operation->BRANCH.XX*2;
+	}
+	else{
+		emulator->incPc();
+	}
+};
 void BEQ(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BGE(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void BLT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
@@ -191,8 +211,16 @@ void JSR(Operation* operation, Emulator * emulator) { default(operation, emulato
 
 void CLRW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void COMW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void INCW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
-void DECW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
+void INCW(Operation* operation, Emulator * emulator) {
+	STANDARD_SINGLE_OPERAND_OPERATION_PERFORMING_PART_W();
+	*destination = *destination + 1;
+	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W();
+};
+void DECW(Operation* operation, Emulator * emulator) {
+	STANDARD_SINGLE_OPERAND_OPERATION_PERFORMING_PART_W();
+	*destination = *destination - 1;
+	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W();
+};
 void NEGW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void ADCW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void SBCW(Operation* operation, Emulator * emulator) { default(operation, emulator); };
