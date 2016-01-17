@@ -1,8 +1,8 @@
 #pragma once
-#include "stdafx.h"
+
 #include "DisassemblerFuncImpl.h"
 #include "EmulatorFuncImpl.h"
-#include "BITMAP.h"
+#include "CustomBitmap.h"
 #define DISPLAY_WIDTH 512
 #define DISPLAY_HEIGHT 256
 #define COLOR_DEPTH 2
@@ -24,5 +24,6 @@ using namespace System::Windows::Forms;
 		};
 		void startDisplaying();
 		void populateFrame();
+		void asyncPopulateFrame(void*);
 		void swapFrames();
 	};

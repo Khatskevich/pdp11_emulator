@@ -23,6 +23,7 @@
     <PlatformToolset>v120</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -53,6 +54,8 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -84,7 +87,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BITMAP.h" />
+    <ClInclude Include="CustomBitmap.h" />
     <ClInclude Include="Disassembler.h" />
     <ClInclude Include="DisassemblerFuncImpl.h" />
     <ClInclude Include="Emulator.h" />
@@ -103,7 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="BITMAP.cpp" />
+    <ClCompile Include="CustomBitmap.cpp" />
     <ClCompile Include="Disassembler.cpp" />
     <ClCompile Include="DisassemblerFuncImpl.cpp" />
     <ClCompile Include="Emulator.cpp" />

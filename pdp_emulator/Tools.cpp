@@ -7,7 +7,7 @@ Tools::Tools()
 {
 }
 
-BITMAP* Tools::readBMP(const char* filename)
+CustomBitmap* Tools::readBMP(const char* filename)
 {
 	int i;
 	FILE* f = fopen(filename, "rb");
@@ -29,7 +29,7 @@ BITMAP* Tools::readBMP(const char* filename)
 		data[i] = data[i + 2];
 		data[i + 2] = tmp;
 	}
-	return new BITMAP(height, width, data);
+	return new CustomBitmap(height, width, data);
 }
 
 bool Tools::getBiteByPosition(int16_t* buffer, int position) {

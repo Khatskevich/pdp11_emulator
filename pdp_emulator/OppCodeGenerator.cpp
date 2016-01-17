@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <cstring>
 #include "SimpleDisplay.h"
-
+#define WHITE 0xFFFF
+#define BLACK 0x0000
 
 /*
 for (y = -heidgt_curr; y<0; y++){
@@ -38,75 +39,27 @@ enum {
 #define BR 1
 
 #define OPERAND(mode, reg) ((((int16_t)mode) << 3) + reg)
-#define GENERATE_DOUBLE_OPERANDS_COMMAND(command,ss, dd) ((((int16_t)command) << 12) + (((int16_t)ss << 6) + (dd)))
-#define GENERATE_ONE_OPERAND_COMMAND(command, op) ((((int16_t)command) << 6) + (op))
-#define GENERATE_BRANCH_COMMAND(command, offset) ((((uint16_t)command) << 8) + ((uint8_t)offset))
+#define GENERATE_DOUBLE_OPERANDS_COMMAND(command,ss, dd) oppCodeProgramm[lastPosition++] = ((((int16_t)command) << 12) + (((int16_t)ss << 6) + (dd)))
+#define GENERATE_ONE_OPERAND_COMMAND(command, op) oppCodeProgramm[lastPosition++] = ((((int16_t)command) << 6) + (op))
+#define GENERATE_BRANCH_COMMAND(command, offset) oppCodeProgramm[lastPosition++] = ((((uint16_t)command) << 8) + ((uint8_t)offset))
+#define SET_CONSTANT(constant) oppCodeProgramm[lastPosition++] = constant
 
-
-#define IMAGE_STARTING_ADDRESS 2*25
+#define IMAGE_STARTING_ADDRESS 2*100
 #define BYTE 8
+
 int16_t* OppCodeGenerator::testGenerate(const char *path) {
 	int16_t *oppCodeProgramm = (int16_t *)calloc(sizeof(int8_t), MEMORY_SIZE);
-
-
-/*
-	R0 - width / height of display
-	R1 - current width
-	R2 - current height
-	R3 - source addr
-	R4 - dst addr
-	R5 = R0 - R1
-	*/
-	
-
-	/*
-	MOV - HEIGHT, R2
-	MOV SOURCE_ADDR, R3
-	MOV DEST_ADDR, R4
-	MOV - R1, R5
-	ADD R0, R5
-	*/
-	BITMAP *bitmap = Tools::readBMP(path);
+	CustomBitmap *bitmap = Tools::readBMP(path);
+	int16_t *tmp;
+	tmp = setDisplayColor(oppCodeProgramm, WHITE);
+	tmp = setDisplayColor(tmp, BLACK);
+	generateMovingImageToVideoMemoryProgramm(tmp, bitmap);
 	populateImage((int8_t*)oppCodeProgramm + IMAGE_STARTING_ADDRESS, bitmap);
-	oppCodeProgramm[0] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R0));
-	oppCodeProgramm[1] = DISPLAY_WIDTH / BYTE;
-	oppCodeProgramm[2] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R2));
-	oppCodeProgramm[3] = -bitmap->getHeight();
-	oppCodeProgramm[4] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R3));
-	oppCodeProgramm[5] = IMAGE_STARTING_ADDRESS;
-	oppCodeProgramm[6] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R4));
-	oppCodeProgramm[7] = VIDEO_MEMORY;
-	oppCodeProgramm[8] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R1));
-	oppCodeProgramm[9] = -bitmap->getWidth() / BYTE;
-	oppCodeProgramm[10] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R5));
-	oppCodeProgramm[11] = DISPLAY_WIDTH / BYTE;
-	oppCodeProgramm[12] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R1), OPERAND(REG, R5));
-
-	
-/*
-XLOOP1: MOV -WIDTH, R1
-XLOOP2: MOV (R3)+, (R4)+
-INC R1
-BNE XLOOP2
-ADD R5, R4
-INC R2
-BNE XLOOP1
-	*/
-	oppCodeProgramm[13] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R1));
-	oppCodeProgramm[14] = -bitmap->getWidth() / BYTE;
-
-	oppCodeProgramm[15] = GENERATE_DOUBLE_OPERANDS_COMMAND(MOVB, OPERAND(AUTOINC, R3), OPERAND(AUTOINC, R4));
-	oppCodeProgramm[16] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R1));
-	oppCodeProgramm[17] = GENERATE_BRANCH_COMMAND(BNE, -2);
-	oppCodeProgramm[18] = GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R5), OPERAND(REG, R4));
-	oppCodeProgramm[19] = GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R2));
-	oppCodeProgramm[20] = GENERATE_BRANCH_COMMAND(BNE, -7); 
-	oppCodeProgramm[21] = GENERATE_BRANCH_COMMAND(BR, 0);
 	
 	return oppCodeProgramm;
 }
 
-void OppCodeGenerator::populateImage(int8_t *oppCodeProgramm, BITMAP *bitmap) {
+void OppCodeGenerator::populateImage(int8_t *oppCodeProgramm, CustomBitmap *bitmap) {
 	int indexInBitmap = 0;
 	unsigned char* tmp = bitmap->getBuffer();
 	
@@ -130,4 +83,86 @@ void OppCodeGenerator::populateImage(int8_t *oppCodeProgramm, BITMAP *bitmap) {
 		}
 	}
 	bitmap->setWidth(bitmap->getWidth() + additional_width_per_line);
+}
+
+
+
+
+int16_t* OppCodeGenerator::generateMovingImageToVideoMemoryProgramm(int16_t *oppCodeProgramm, CustomBitmap *bitmap) {
+
+	/*
+	R0 - width / height of display
+	R1 - current width
+	R2 - current height
+	R3 - source addr
+	R4 - dst addr
+	R5 = R0 - R1
+	*/
+
+
+	/*
+	MOV - HEIGHT, R2
+	MOV SOURCE_ADDR, R3
+	MOV DEST_ADDR, R4
+	MOV - R1, R5
+	ADD R0, R5
+	*/
+	int lastPosition = 0;
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R0));
+	SET_CONSTANT(DISPLAY_WIDTH / BYTE);
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R2));
+	SET_CONSTANT(-bitmap->getHeight());
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R3));
+	SET_CONSTANT(IMAGE_STARTING_ADDRESS);
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R4));
+	SET_CONSTANT(VIDEO_MEMORY);
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R1));
+	SET_CONSTANT(-bitmap->getWidth() / BYTE);
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R5));
+	SET_CONSTANT(DISPLAY_WIDTH / BYTE);
+	GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R1), OPERAND(REG, R5));
+	/*
+	XLOOP1: MOV -WIDTH, R1
+	XLOOP2: MOV (R3)+, (R4)+
+	INC R1
+	BNE XLOOP2
+	ADD R5, R4
+	INC R2
+	BNE XLOOP1
+	*/
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R1));
+	SET_CONSTANT(-bitmap->getWidth() / BYTE);
+
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOVB, OPERAND(AUTOINC, R3), OPERAND(AUTOINC, R4));
+	GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R1));
+	GENERATE_BRANCH_COMMAND(BNE, -2);
+	GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R5), OPERAND(REG, R4));
+	GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R2));
+	GENERATE_BRANCH_COMMAND(BNE, -7);
+	GENERATE_BRANCH_COMMAND(BR, 0);
+	return &oppCodeProgramm[lastPosition];
+}
+
+int16_t* OppCodeGenerator::setDisplayColor(int16_t *oppCodeProgramm, uint16_t color) {
+	/*
+		MOV VIDEO_MEMORY R0
+		MOV -VIDEO_MEMORY_SIZE R1
+		MOV COLOR R2
+LOOP:	XOR (R0) (R0)+ //
+		INC R1
+		BNE LOOP
+
+		*/
+	int lastPosition = 0;
+	
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R0));
+	SET_CONSTANT(VIDEO_MEMORY);
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R1));
+	SET_CONSTANT(-VIDEO_MEMORY_SIZE/2);
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R2));
+	SET_CONSTANT(color);
+	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(REG, R2), OPERAND(AUTOINC, R0));
+	GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R1));
+	GENERATE_BRANCH_COMMAND(BNE, -2);
+	return &(oppCodeProgramm[lastPosition]);
 }

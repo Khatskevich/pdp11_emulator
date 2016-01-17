@@ -45,10 +45,10 @@
     <ClInclude Include="OppCodeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BITMAP.h">
+    <ClInclude Include="Tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tools.h">
+    <ClInclude Include="CustomBitmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -88,10 +88,10 @@
     <ClCompile Include="OppCodeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BITMAP.cpp">
+    <ClCompile Include="Tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tools.cpp">
+    <ClCompile Include="CustomBitmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

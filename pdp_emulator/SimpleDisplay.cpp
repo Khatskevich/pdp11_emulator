@@ -3,6 +3,7 @@
 #include "Tools.h"
 
 
+
 	SimpleDisplay::SimpleDisplay()
 	{
 	}
@@ -50,6 +51,13 @@
 		displayContainer->Image = image;
 	};
 
+	
 
 	void SimpleDisplay::swapFrames(){};
+	void SimpleDisplay::asyncPopulateFrame(void * Params){
+		while (1) {
+			//Sleep(2);
+			populateFrame();
+		}
+	};
 

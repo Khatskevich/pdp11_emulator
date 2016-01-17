@@ -1,10 +1,16 @@
 #pragma once
+
+
 #include "DisassemblerFuncImpl.h"
 #include "EmulatorFuncImpl.h"
 #include "SimpleDisplay.h"
 #include "OppCodeGenerator.h"
 #include "Disassembler.h"
 #include <iomanip>
+
+
+
+
 namespace pdp_emulator {
 
 	using namespace System;
@@ -13,6 +19,7 @@ namespace pdp_emulator {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+
 
 	/// <summary>
 	/// Summary for MyForm
@@ -25,8 +32,23 @@ namespace pdp_emulator {
 	private: System::Windows::Forms::ListBox^  listBox2;
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::TextBox^  textBox1;
+	private: System::Windows::Forms::Button^  button3;
+	private: System::Windows::Forms::Button^  button4;
+	private: System::Windows::Forms::TextBox^  textBox2;
+	private: System::Windows::Forms::Button^  button5;
 			 SimpleDisplay^ display;
+
+
+
+				 //{{AFX_MSG_MAP(CMyDialog)
+				 //ON_WM_SYSCOMMAND()
+				 //ON_WM_PAINT()
+				// ON_WM_QUERYDRAGICON()
+				 //}}AFX_MSG_MAP
+				 //	ON_MESSAGE(WM_UPDATE_CONTROL, OnUpdateControl)
+			 
 	public:
+	
 
 		MyForm(void)
 		{
@@ -100,7 +122,7 @@ namespace pdp_emulator {
 			}
 			showRegisters();
 			setCursor(emulator->registers.R[7]/2, "->");
-			display->populateFrame();
+		//	display->populateFrame();
 		}
 		
 			void setCursor(int position, const char* arrow) {
@@ -135,6 +157,9 @@ namespace pdp_emulator {
 				delete components;
 			}
 		}
+
+
+
 	private: System::Windows::Forms::Button^  button1;
 	protected:
 	private: System::Windows::Forms::PictureBox^  pictureBox1;
@@ -158,6 +183,10 @@ namespace pdp_emulator {
 			this->listBox2 = (gcnew System::Windows::Forms::ListBox());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->button3 = (gcnew System::Windows::Forms::Button());
+			this->button4 = (gcnew System::Windows::Forms::Button());
+			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
+			this->button5 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -215,11 +244,52 @@ namespace pdp_emulator {
 			this->textBox1->TabIndex = 11;
 			this->textBox1->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox1_TextChanged_1);
 			// 
+			// button3
+			// 
+			this->button3->Location = System::Drawing::Point(331, 12);
+			this->button3->Name = L"button3";
+			this->button3->Size = System::Drawing::Size(75, 23);
+			this->button3->TabIndex = 12;
+			this->button3->Text = L"reset";
+			this->button3->UseVisualStyleBackColor = true;
+			this->button3->Click += gcnew System::EventHandler(this, &MyForm::button3_Click);
+			// 
+			// button4
+			// 
+			this->button4->Location = System::Drawing::Point(412, 12);
+			this->button4->Name = L"button4";
+			this->button4->Size = System::Drawing::Size(75, 23);
+			this->button4->TabIndex = 13;
+			this->button4->Text = L"run";
+			this->button4->UseVisualStyleBackColor = true;
+			this->button4->Click += gcnew System::EventHandler(this, &MyForm::button4_Click);
+			// 
+			// textBox2
+			// 
+			this->textBox2->Location = System::Drawing::Point(593, 14);
+			this->textBox2->Name = L"textBox2";
+			this->textBox2->Size = System::Drawing::Size(264, 20);
+			this->textBox2->TabIndex = 14;
+			// 
+			// button5
+			// 
+			this->button5->Location = System::Drawing::Point(494, 14);
+			this->button5->Name = L"button5";
+			this->button5->Size = System::Drawing::Size(79, 21);
+			this->button5->TabIndex = 15;
+			this->button5->Text = L"stop";
+			this->button5->UseVisualStyleBackColor = true;
+			this->button5->Click += gcnew System::EventHandler(this, &MyForm::button5_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(962, 483);
+			this->Controls->Add(this->button5);
+			this->Controls->Add(this->textBox2);
+			this->Controls->Add(this->button4);
+			this->Controls->Add(this->button3);
 			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->listBox2);
@@ -265,6 +335,22 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 	step();
 }
 private: System::Void textBox1_TextChanged_1(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
+	setCursor(emulator->registers.R[7] / 2, "  ");
+	emulator->resetRegisters();
+	showRegisters();
+	setCursor(emulator->registers.R[7] / 2, "->");
+}
+		 
+	private: System::Void button4_Click(System::Object^  sender, System::EventArgs^  e);
+
+
+	
+
+
+
+private: System::Void button5_Click(System::Object^  sender, System::EventArgs^  e) {
 }
 };
 }
