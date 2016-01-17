@@ -2,8 +2,9 @@
 #include "inttypes.h"
 
 #define MEMORY_SIZE 65536
-#define VIDEO_MEMORY 32768
+#define VIDEO_MEMORY 16384
 #define VIDEO_MEMORY_SIZE 32768
+#define ROM_MEMORY 39152
 
 typedef union{
 	uint32_t raw;

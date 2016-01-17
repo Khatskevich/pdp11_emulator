@@ -34,7 +34,7 @@ namespace pdp_emulator {
 	private: System::Windows::Forms::TextBox^  textBox1;
 	private: System::Windows::Forms::Button^  button3;
 	private: System::Windows::Forms::Button^  button4;
-	private: System::Windows::Forms::TextBox^  textBox2;
+	public: System::Windows::Forms::TextBox^  textBox2;
 	private: System::Windows::Forms::Button^  button5;
 			 SimpleDisplay^ display;
 
@@ -48,7 +48,9 @@ namespace pdp_emulator {
 				 //	ON_MESSAGE(WM_UPDATE_CONTROL, OnUpdateControl)
 			 
 	public:
-	
+		Emulator * getEmulator() {
+			return emulator;
+		}
 
 		MyForm(void)
 		{
@@ -108,6 +110,7 @@ namespace pdp_emulator {
 			os = chars;
 			Marshal::FreeHGlobal(IntPtr((void*)chars));
 		}
+
 
 		void step() {
 			int steps_num = 1;
@@ -305,22 +308,7 @@ namespace pdp_emulator {
 
 		}
 #pragma endregion
-	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-
-		OpenFileDialog^ openFileDialog1 = gcnew OpenFileDialog;
-
-		openFileDialog1->InitialDirectory = "..\\";
-		openFileDialog1->Filter = "bmp files (*.bmp)|*.bmp";
-		openFileDialog1->FilterIndex = 2;
-		openFileDialog1->RestoreDirectory = true;
-
-		if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
-		{	
-			emulator->resetRegisters();
-			run(openFileDialog1->FileName);
-		}
-		
-	}
+	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e);
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 	}
 	private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
