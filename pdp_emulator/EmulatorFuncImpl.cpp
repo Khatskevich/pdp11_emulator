@@ -188,7 +188,7 @@ void SUB(Operation* operation, Emulator * emulator) {
 		*destination -= *source;
 	SET_DEST_STANDARD_FLAGS_DOUBLE_OPERAND_OPERATION_PERFORMING_PART_W()
 };
-void HALT_WAIT_RTI_IOT_RESET(Operation* operation, Emulator * emulator) { exit(0); };
+void HALT_WAIT_RTI_IOT_RESET(Operation* operation, Emulator * emulator) { emulator->halted = true; };
 void HALT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void WAIT(Operation* operation, Emulator * emulator) { default(operation, emulator); };
 void RTI(Operation* operation, Emulator * emulator) { default(operation, emulator); };

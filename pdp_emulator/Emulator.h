@@ -78,6 +78,7 @@ class Emulator
 public:
 	void resetRegisters();
 	Registers registers;
+	volatile bool halted;
 	char* memory;
 	Emulator();
 	int writeBufToMemory(char* buf, unsigned int position, unsigned int size );

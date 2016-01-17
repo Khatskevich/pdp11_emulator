@@ -6,6 +6,7 @@
 UINT updateScreen(void*);
 UINT runEmulator(void *pParam);
 System::Void pdp_emulator::MyForm::button4_Click(System::Object^  sender, System::EventArgs^  e){
+	emulator->halted = false;
 	gcroot<pdp_emulator::MyForm^>* pointer = new gcroot<pdp_emulator::MyForm^>(this);
 	AfxBeginThread((AFX_THREADPROC)runEmulator, (LPVOID)pointer);
 }
@@ -14,17 +15,17 @@ System::Void pdp_emulator::MyForm::button4_Click(System::Object^  sender, System
 UINT runEmulator (void *pParam)
 {
 	gcroot<pdp_emulator::MyForm^>* pointer = (gcroot<pdp_emulator::MyForm^>*)(pParam);
-	int speed = 10;
-	while (1) {
-		try{
-			speed = int::Parse((*pointer)->textBox2->Text);
-		}
-		catch (...){
-		}
-		
+	int speed;
+	try{
+		speed = int::Parse((*pointer)->textBox2->Text);
+	}
+	catch (...){
+		speed = 10;
+	}
+	do {
 		Sleep(speed);
 		(*pointer)->getEmulator()->step();
-	}
+	} while ((*pointer)->getEmulator()->halted == false);
 	return 0;
 }
 System::Void pdp_emulator::MyForm::button1_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -50,7 +51,7 @@ UINT updateScreen(void *pParam)
 {
 	gcroot<SimpleDisplay^>* pointer = (gcroot<SimpleDisplay^>*)(pParam);
 	while (1) {
-		Sleep(1000);
+		Sleep(100);
 		(*pointer)->populateFrame();
 	}
 	return 0;

@@ -44,7 +44,7 @@ enum {
 #define GENERATE_BRANCH_COMMAND(command, offset) oppCodeProgramm[lastPosition++] = ((((uint16_t)command) << 8) + ((uint8_t)offset))
 #define SET_CONSTANT(constant) oppCodeProgramm[lastPosition++] = constant
 
-#define IMAGE_STARTING_ADDRESS 2*100
+#define IMAGE_STARTING_ADDRESS (2*100)
 #define BYTE 8
 
 int16_t* OppCodeGenerator::testGenerate(const char *path) {
@@ -113,7 +113,7 @@ int16_t* OppCodeGenerator::generateMovingImageToVideoMemoryProgramm(int16_t *opp
 	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R2));
 	SET_CONSTANT(-bitmap->getHeight());
 	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R3));
-	SET_CONSTANT(IMAGE_STARTING_ADDRESS);
+	SET_CONSTANT(IMAGE_STARTING_ADDRESS + ROM_MEMORY);
 	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R4));
 	SET_CONSTANT(VIDEO_MEMORY);
 	GENERATE_DOUBLE_OPERANDS_COMMAND(MOV, OPERAND(AUTOINC, R_PC), OPERAND(REG, R1));
@@ -139,7 +139,7 @@ int16_t* OppCodeGenerator::generateMovingImageToVideoMemoryProgramm(int16_t *opp
 	GENERATE_DOUBLE_OPERANDS_COMMAND(ADD, OPERAND(REG, R5), OPERAND(REG, R4));
 	GENERATE_ONE_OPERAND_COMMAND(INC, OPERAND(REG, R2));
 	GENERATE_BRANCH_COMMAND(BNE, -7);
-	GENERATE_BRANCH_COMMAND(BR, 0);
+	//GENERATE_BRANCH_COMMAND(BR, 0);
 	return &oppCodeProgramm[lastPosition];
 }
 

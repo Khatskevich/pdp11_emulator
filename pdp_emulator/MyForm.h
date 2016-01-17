@@ -87,12 +87,12 @@ namespace pdp_emulator {
 			string str; 
 			MarshalString(path, str);
 			int16_t* raw = oppCodeGenerator->testGenerate(str.c_str());
-			memcpy((void*)emulator->memory, (void*)raw, MEMORY_SIZE);
+			memcpy((char*)emulator->memory + ROM_MEMORY, (void*)raw, MEMORY_SIZE - ROM_MEMORY);
 			display->populateFrame();
 			free(raw);
 			raw = (int16_t*) emulator->memory;
-			int i = 0;
-			while ( i < 100) {
+			int i = ROM_MEMORY/2;
+			while (i < ROM_MEMORY/2 + 100) {
 				unsigned int size = 0;
 				std::string temp = Disassembler::disassemble((char*)(raw + i), size);
 				listBox1->Items->Add("   " + toHex(i*2) + "     " + toBin(raw[i]) + "   " + gcnew String(temp.c_str()) );
@@ -113,28 +113,44 @@ namespace pdp_emulator {
 
 
 		void step() {
+			emulator->halted = true;
+			Sleep(50);
 			int steps_num = 1;
 			try{
 				steps_num = int::Parse(textBox1->Text);
 			}
 			catch (...){
 			}
-			setCursor(emulator->registers.R[7] / 2, "  ");
 			for (int i = 0; i < steps_num; i++){
 				emulator->step();
 			}
 			showRegisters();
-			setCursor(emulator->registers.R[7]/2, "->");
+			setCursor();
 		//	display->populateFrame();
 		}
-		
-			void setCursor(int position, const char* arrow) {
-			String ^str = listBox1->Items[position]->ToString();
+		void stop() {
+			emulator->halted = true;
+		}
+		void reset() {
+			emulator->resetRegisters();
+			showRegisters();
+			setCursor();
+		}
+		void setCursor() {
+			int position =( emulator->registers.R[7] )/ 2;
+			static int last_position = ROM_MEMORY/2;
+			String ^str = listBox1->Items[last_position - ROM_MEMORY/2]->ToString();
 			string normalString;
 			MarshalString(str, normalString);
-			normalString.replace(0, 2, arrow);
+			normalString.replace(0, 2, "  ");
 			String^ str2 = gcnew String(normalString.c_str());
-			listBox1->Items[position] = str2;
+			listBox1->Items[last_position-ROM_MEMORY/2] = str2;
+			last_position = position;
+			str = listBox1->Items[position - ROM_MEMORY/2]->ToString();
+			MarshalString(str, normalString);
+			normalString.replace(0, 2, "->");
+			str2 = gcnew String(normalString.c_str());
+			listBox1->Items[position - ROM_MEMORY/2] = str2;
 		}
 		void showRegisters(){
 			listBox2->Items->Clear();
@@ -195,7 +211,7 @@ namespace pdp_emulator {
 			// 
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(61, 12);
+			this->button1->Location = System::Drawing::Point(12, 274);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(75, 23);
 			this->button1->TabIndex = 0;
@@ -205,7 +221,7 @@ namespace pdp_emulator {
 			// 
 			// pictureBox1
 			// 
-			this->pictureBox1->Location = System::Drawing::Point(61, 41);
+			this->pictureBox1->Location = System::Drawing::Point(12, 12);
 			this->pictureBox1->Name = L"pictureBox1";
 			this->pictureBox1->Size = System::Drawing::Size(512, 256);
 			this->pictureBox1->TabIndex = 1;
@@ -215,23 +231,23 @@ namespace pdp_emulator {
 			// listBox1
 			// 
 			this->listBox1->FormattingEnabled = true;
-			this->listBox1->Location = System::Drawing::Point(593, 41);
+			this->listBox1->Location = System::Drawing::Point(544, 12);
 			this->listBox1->Name = L"listBox1";
-			this->listBox1->Size = System::Drawing::Size(264, 433);
+			this->listBox1->Size = System::Drawing::Size(264, 498);
 			this->listBox1->TabIndex = 8;
 			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::listBox1_SelectedIndexChanged);
 			// 
 			// listBox2
 			// 
 			this->listBox2->FormattingEnabled = true;
-			this->listBox2->Location = System::Drawing::Point(61, 303);
+			this->listBox2->Location = System::Drawing::Point(262, 274);
 			this->listBox2->Name = L"listBox2";
 			this->listBox2->Size = System::Drawing::Size(262, 238);
 			this->listBox2->TabIndex = 9;
 			// 
 			// button2
 			// 
-			this->button2->Location = System::Drawing::Point(142, 12);
+			this->button2->Location = System::Drawing::Point(12, 303);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(75, 23);
 			this->button2->TabIndex = 10;
@@ -241,15 +257,15 @@ namespace pdp_emulator {
 			// 
 			// textBox1
 			// 
-			this->textBox1->Location = System::Drawing::Point(224, 14);
+			this->textBox1->Location = System::Drawing::Point(102, 306);
 			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(100, 20);
+			this->textBox1->Size = System::Drawing::Size(82, 20);
 			this->textBox1->TabIndex = 11;
 			this->textBox1->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox1_TextChanged_1);
 			// 
 			// button3
 			// 
-			this->button3->Location = System::Drawing::Point(331, 12);
+			this->button3->Location = System::Drawing::Point(12, 332);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(75, 23);
 			this->button3->TabIndex = 12;
@@ -259,7 +275,7 @@ namespace pdp_emulator {
 			// 
 			// button4
 			// 
-			this->button4->Location = System::Drawing::Point(412, 12);
+			this->button4->Location = System::Drawing::Point(12, 395);
 			this->button4->Name = L"button4";
 			this->button4->Size = System::Drawing::Size(75, 23);
 			this->button4->TabIndex = 13;
@@ -269,14 +285,14 @@ namespace pdp_emulator {
 			// 
 			// textBox2
 			// 
-			this->textBox2->Location = System::Drawing::Point(593, 14);
+			this->textBox2->Location = System::Drawing::Point(93, 395);
 			this->textBox2->Name = L"textBox2";
-			this->textBox2->Size = System::Drawing::Size(264, 20);
+			this->textBox2->Size = System::Drawing::Size(91, 20);
 			this->textBox2->TabIndex = 14;
 			// 
 			// button5
 			// 
-			this->button5->Location = System::Drawing::Point(494, 14);
+			this->button5->Location = System::Drawing::Point(12, 445);
 			this->button5->Name = L"button5";
 			this->button5->Size = System::Drawing::Size(79, 21);
 			this->button5->TabIndex = 15;
@@ -288,7 +304,7 @@ namespace pdp_emulator {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(962, 483);
+			this->ClientSize = System::Drawing::Size(821, 517);
 			this->Controls->Add(this->button5);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->button4);
@@ -325,10 +341,7 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 private: System::Void textBox1_TextChanged_1(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
-	setCursor(emulator->registers.R[7] / 2, "  ");
-	emulator->resetRegisters();
-	showRegisters();
-	setCursor(emulator->registers.R[7] / 2, "->");
+	reset();
 }
 		 
 	private: System::Void button4_Click(System::Object^  sender, System::EventArgs^  e);
@@ -339,6 +352,7 @@ private: System::Void button3_Click(System::Object^  sender, System::EventArgs^ 
 
 
 private: System::Void button5_Click(System::Object^  sender, System::EventArgs^  e) {
+	stop();
 }
 };
 }

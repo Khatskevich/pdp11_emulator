@@ -176,9 +176,11 @@ Emulator::Emulator()
 }
 
 void Emulator::resetRegisters() {
+	halted = false;
 	for (int i = 0; i < 8; i++){
 		this->registers.R[i] = 0;
 	}
+	this->registers.R[R_PC] = ROM_MEMORY;
 	this->registers.flagC = 0;
 	this->registers.flagI = 0;
 	this->registers.flagN = 0;
